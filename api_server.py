@@ -1,5 +1,5 @@
 """
-PropAI HQ API Server — FastAPI (포트 8001)
+PROPZIC HQ API Server — FastAPI (포트 8001)
 34명 AI직원 채팅 + 끼어들기 시스템
 """
 
