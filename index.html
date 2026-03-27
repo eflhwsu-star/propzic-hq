@@ -70,6 +70,7 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 .msg.owner{align-self:flex-end;background:#2a4f8b;border-radius:16px 16px 4px 16px}
 .msg.ai{align-self:flex-start;background:var(--bg2);border-radius:16px 16px 16px 4px}
 .msg-label{font-size:11px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.msg-time{font-size:10px;color:var(--text2);margin-left:auto;font-weight:400}
 .msg-content{font-size:14px}
 
 /* BUBBLE COLORS */
@@ -275,7 +276,7 @@ const API_BASE = CONFIG.API_BASE;
 
 // 브랜드명 동적 반영
 document.getElementById('pageTitle').textContent = CONFIG.HQ_TITLE;
-document.getElementById('brandLogo').innerHTML = `${BRAND.replace('AI', '<span>AI</span>')} HQ`;
+document.getElementById('brandLogo').innerHTML = `${BRAND} <span>HQ</span>`;
 
 // ===== STAFF DATA =====
 const DEPARTMENTS = [
@@ -337,8 +338,20 @@ DEPARTMENTS.forEach(d => d.members.forEach(m => {
   ALL_STAFF[m.name] = { ...m, dept: d.name, color: d.color };
 }));
 
-// Chat histories per staff
-const chatHistories = {};
+// Chat histories per staff — localStorage 기반 (직원별 최근 50개)
+const STORAGE_KEY = 'propzic_hq_chats';
+function loadChatHistories() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function saveChatHistories() {
+  // 직원별 최근 50개만 유지
+  const trimmed = {};
+  for (const [k, v] of Object.entries(chatHistories)) {
+    trimmed[k] = v.slice(-50);
+  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed)); } catch {}
+}
+const chatHistories = loadChatHistories();
 let currentStaff = '이준서';
 
 // Command history (세션 내 최근 10개)
@@ -392,19 +405,20 @@ function renderMessages() {
   const box = document.getElementById('messages');
   const history = chatHistories[currentStaff] || [];
   box.innerHTML = history.map(m => {
+    const t = fmtTime(m.time);
     if (m.role === 'user') {
-      return `<div class="msg owner"><div class="msg-content">${escHtml(m.content)}</div></div>`;
+      return `<div class="msg owner"><div class="msg-label" style="justify-content:flex-end"><span class="msg-time">${t}</span></div><div class="msg-content">${escHtml(m.content)}</div></div>`;
     }
     if (m.role === 'interrupt') {
       const s = ALL_STAFF[m.name] || {};
       return `<div class="msg ai interrupt border-${s.color || 'gold'}" onclick="selectStaff('${m.name}')">
-        <div class="msg-label">${s.emoji || '💬'} ${m.name} (${m.staffRole || ''})</div>
+        <div class="msg-label">${s.emoji || '💬'} ${m.name} (${m.staffRole || ''})<span class="msg-time">${t}</span></div>
         <div class="msg-content">${escHtml(m.content)}</div>
       </div>`;
     }
     const s = ALL_STAFF[currentStaff] || {};
     return `<div class="msg ai border-${s.color || 'gold'}">
-      <div class="msg-label">${s.emoji || '💬'} ${currentStaff} (${s.role || ''})</div>
+      <div class="msg-label">${s.emoji || '💬'} ${currentStaff} (${s.role || ''})<span class="msg-time">${t}</span></div>
       <div class="msg-content">${escHtml(m.content)}</div>
     </div>`;
   }).join('');
@@ -412,6 +426,7 @@ function renderMessages() {
 }
 
 function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+function fmtTime(ts) { if (!ts) return ''; const d = new Date(ts); return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0'); }
 
 // ===== SEND (Chat) =====
 async function sendMessage() {
@@ -422,7 +437,8 @@ async function sendMessage() {
   input.style.height = '44px';
 
   if (!chatHistories[currentStaff]) chatHistories[currentStaff] = [];
-  chatHistories[currentStaff].push({ role: 'user', content: text });
+  chatHistories[currentStaff].push({ role: 'user', content: text, time: Date.now() });
+  saveChatHistories();
   renderMessages();
 
   const btn = document.getElementById('sendBtn');
@@ -433,7 +449,8 @@ async function sendMessage() {
     let aiText = '';
     if (currentStaff === '이준서') {
       aiText = await streamChat('/api/ceo/chat', { message: text, history: getApiHistory() });
-      chatHistories[currentStaff].push({ role: 'assistant', content: aiText });
+      chatHistories[currentStaff].push({ role: 'assistant', content: aiText, time: Date.now() });
+      saveChatHistories();
       renderMessages();
       hideTyping();
       await checkInterrupts(text, aiText);
@@ -445,11 +462,13 @@ async function sendMessage() {
         message: text,
         history: getApiHistory()
       });
-      chatHistories[currentStaff].push({ role: 'assistant', content: aiText });
+      chatHistories[currentStaff].push({ role: 'assistant', content: aiText, time: Date.now() });
+      saveChatHistories();
       renderMessages();
     }
   } catch (e) {
-    chatHistories[currentStaff].push({ role: 'assistant', content: '⚠️ 서버 연결 실패. API 서버가 실행 중인지 확인해주세요.' });
+    chatHistories[currentStaff].push({ role: 'assistant', content: '⚠️ 서버 연결 실패. API 서버가 실행 중인지 확인해주세요.', time: Date.now() });
+    saveChatHistories();
     renderMessages();
   }
   hideTyping();
@@ -525,9 +544,11 @@ async function checkInterrupts(ownerMsg, ceoResponse) {
           role: 'interrupt',
           name: intr.name,
           staffRole: intr.role,
-          content: intr.message
+          content: intr.message,
+          time: Date.now()
         });
       }
+      saveChatHistories();
       renderMessages();
     }
   } catch (e) {
