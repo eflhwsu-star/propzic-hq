@@ -4,6 +4,7 @@ PropAI CEO Agent — 이준서 (전체총괄·일일주간브리핑)
 """
 
 import os
+import sys
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -11,17 +12,21 @@ from pathlib import Path
 import anthropic
 from dotenv import load_dotenv
 
+# brand_config import (상위 디렉토리)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from brand_config import BRAND_NAME, SERVICE_B2C, SERVICE_B2B, DEFAULT_MODEL
+
 load_dotenv()
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-MODEL = "claude-sonnet-4-20250514"
+MODEL = DEFAULT_MODEL
 
 BASE_DIR = Path(__file__).parent.parent
 REPORTS_DIR = BASE_DIR / "reports"
 REPORTS_DIR.mkdir(exist_ok=True)
 
-CEO_SYSTEM = """당신은 PropAI CEO AI 이준서(전체총괄·일일주간브리핑)입니다.
-집값해독(B2C 부동산 데이터)과 중개오토(B2B 중개사 자동화) 두 서비스를 총괄합니다.
+CEO_SYSTEM = f"""당신은 {BRAND_NAME} CEO AI 이준서(전체총괄·일일주간브리핑)입니다.
+{SERVICE_B2C}(B2C 부동산 데이터)과 {SERVICE_B2B}(B2B 중개사 자동화) 두 서비스를 총괄합니다.
 24시간 즉각 응답. 핵심 먼저, 3줄 요약 후 상세 설명.
 문제 발견 시 해결책 함께 제시. 긴급도: 🔴긴급 🟡주의 🟢정상.
 항상 한국어로 답변."""
@@ -41,7 +46,7 @@ def generate_daily_briefing(monitor_result: str = "", infra_result: str = "") ->
 위 데이터를 바탕으로 오전 브리핑을 작성하세요.
 
 형식:
-# PropAI 일일 브리핑 — {today}
+# {BRAND_NAME} 일일 브리핑 — {today}
 
 ## 🔴 긴급사항
 (없으면 "없음")
@@ -56,7 +61,7 @@ def generate_daily_briefing(monitor_result: str = "", infra_result: str = "") ->
 2.
 
 ---
-👑 이준서 CEO AI · PropAI HQ"""
+👑 이준서 CEO AI · {BRAND_NAME} HQ"""
 
     response = client.messages.create(
         model=MODEL,
@@ -92,7 +97,7 @@ def generate_weekly_briefing() -> str:
 {combined}
 
 형식:
-# PropAI 주간 브리핑 — {today.strftime('%Y-%m-%d')} 기준
+# {BRAND_NAME} 주간 브리핑 — {today.strftime('%Y-%m-%d')} 기준
 
 ## 📊 이번 주 요약 (3줄)
 
@@ -108,7 +113,7 @@ def generate_weekly_briefing() -> str:
 3.
 
 ---
-👑 이준서 CEO AI · PropAI HQ 주간보고"""
+👑 이준서 CEO AI · {BRAND_NAME} HQ 주간보고"""
 
     response = client.messages.create(
         model=MODEL,

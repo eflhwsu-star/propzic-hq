@@ -5,6 +5,7 @@ PropAI 모니터링 에이전트
 """
 
 import os
+import sys
 import hashlib
 import json
 import logging
@@ -16,10 +17,14 @@ from bs4 import BeautifulSoup
 import anthropic
 from dotenv import load_dotenv
 
+# brand_config import (상위 디렉토리)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from brand_config import BRAND_NAME, SERVICE_B2C, SERVICE_B2B, DEFAULT_MODEL
+
 load_dotenv()
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-MODEL = "claude-sonnet-4-20250514"
+MODEL = DEFAULT_MODEL
 
 BASE_DIR = Path(__file__).parent.parent
 LOGS_DIR = BASE_DIR / "logs"
@@ -63,7 +68,7 @@ def save_hashes(hashes: dict):
 def monitor_service_mentions() -> str:
     """네이버 검색으로 '집값해독', '중개오토' 언급 수집"""
     results = []
-    keywords = ["집값해독", "중개오토"]
+    keywords = [SERVICE_B2C, SERVICE_B2B]
 
     for keyword in keywords:
         try:
@@ -140,7 +145,7 @@ def analyze_change(competitor: str, snippet: str) -> str:
         response = client.messages.create(
             model=MODEL,
             max_tokens=500,
-            system="당신은 PropAI 경쟁사 분석가입니다. 경쟁사 페이지 변경을 한국어로 간결하게 분석하세요.",
+            system=f"당신은 {BRAND_NAME} 경쟁사 분석가입니다. 경쟁사 페이지 변경을 한국어로 간결하게 분석하세요.",
             messages=[{
                 "role": "user",
                 "content": f"{competitor} 페이지에서 변경이 감지되었습니다. 아래 내용을 분석해주세요:\n\n{snippet}"

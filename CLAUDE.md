@@ -153,6 +153,32 @@ PropAI HQ는 34명 AI직원으로 구성된 가상 지휘본부입니다.
 | GET | /api/status | 전 직원 상태 조회 |
 | POST | /api/briefing/generate-now | 즉시 브리핑 생성 (테스트용) |
 
+## 브랜드명 상수 관리 (2026-03-27 추가)
+
+브랜드명은 **한 곳에서만 관리**됩니다. 변경 시 아래 2개 파일만 수정:
+
+| 파일 | 역할 | 사용처 |
+|------|------|--------|
+| `config.js` | 프론트엔드 상수 | index.html (대시보드) |
+| `brand_config.py` | 백엔드 상수 | api_server.py, ceo_agent.py, secretary.py, monitor_agent.py, scheduler.py |
+
+### 관리되는 상수
+| 상수 | 현재값 | 설명 |
+|------|--------|------|
+| `BRAND_NAME` | PropAI | 영문 브랜드명 |
+| `BRAND_NAME_KR` | 프롭AI | 한글 브랜드명 |
+| `HQ_DOMAIN` | hq.propai.ai | HQ 도메인 |
+| `SERVICE_B2C` | 집값해독 | B2C 서비스명 |
+| `SERVICE_B2B` | 중개오토 | B2B 서비스명 |
+| `DEFAULT_MODEL` | claude-sonnet-4-20250514 | Claude API 모델 |
+
+### 브랜드명 변경 절차
+1. `config.js`의 `CONFIG.BRAND_NAME` 등 수정
+2. `brand_config.py`의 `BRAND_NAME` 등 수정
+3. Cloudflare Pages 재배포 (`npx wrangler pages deploy .`)
+4. 가비아 서버 재시작 (`systemctl restart propai-hq`)
+5. 도메인 변경이 필요하면 Cloudflare DNS + Pages custom domain 수정
+
 ## 변경 방법
 
 ### 직원 추가

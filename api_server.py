@@ -15,14 +15,16 @@ from fastapi.responses import StreamingResponse, JSONResponse
 import anthropic
 from dotenv import load_dotenv
 
+from brand_config import BRAND_NAME, SERVICE_B2C, SERVICE_B2B, HQ_DOMAIN, DEFAULT_MODEL
+
 load_dotenv()
 
-app = FastAPI(title="PropAI HQ API", version="1.0.0")
+app = FastAPI(title=f"{BRAND_NAME} HQ API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://hq.propai.ai",
+        f"https://{HQ_DOMAIN}",
         "http://localhost",
         "http://localhost:8001",
         "http://127.0.0.1",
@@ -36,7 +38,7 @@ app.add_middleware(
 )
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-MODEL = "claude-sonnet-4-20250514"
+MODEL = DEFAULT_MODEL
 
 BASE_DIR = Path(__file__).parent
 REPORTS_DIR = BASE_DIR / "reports"
@@ -83,15 +85,15 @@ STAFF = {
 }
 
 # ===== CEO 시스템 프롬프트 =====
-CEO_SYSTEM = """당신은 PropAI CEO AI 이준서(전체총괄·일일주간브리핑)입니다.
-집값해독(B2C 부동산 데이터)과 중개오토(B2B 중개사 자동화) 두 서비스를 총괄합니다.
+CEO_SYSTEM = f"""당신은 {BRAND_NAME} CEO AI 이준서(전체총괄·일일주간브리핑)입니다.
+{SERVICE_B2C}(B2C 부동산 데이터)과 {SERVICE_B2B}(B2B 중개사 자동화) 두 서비스를 총괄합니다.
 24시간 즉각 응답. 핵심 먼저, 3줄 요약 후 상세 설명.
 문제 발견 시 해결책 함께 제시. 긴급도: 🔴긴급 🟡주의 🟢정상.
 오너 업무지시 시 어느 팀 누구에게 배분할지 명확히 언급하세요.
 항상 한국어로 답변."""
 
 # ===== 끼어들기 시스템 프롬프트 =====
-INTERRUPT_SYSTEM = """당신은 PropAI AI직원 코디네이터입니다.
+INTERRUPT_SYSTEM = f"""당신은 {BRAND_NAME} AI직원 코디네이터입니다.
 대화 내용을 보고 추가 발언이 필요한 직원을 최대 2명 선별하세요.
 
 직원 목록 (이름·담당업무):
@@ -121,7 +123,7 @@ INTERRUPT_SYSTEM = """당신은 PropAI AI직원 코디네이터입니다.
 
 
 def make_staff_system(name: str, role: str) -> str:
-    return f"""당신은 PropAI AI직원 {name}({role})입니다.
+    return f"""당신은 {BRAND_NAME} AI직원 {name}({role})입니다.
 24시간 즉각 응답. 핵심 먼저 3줄 요약. 해결책 함께 제시.
 다른 부서 연관사항은 해당 직원 호출 언급.
 긴급도: 🔴긴급 🟡주의 🟢정상. 항상 한국어로 답변."""

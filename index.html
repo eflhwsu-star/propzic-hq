@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PropAI HQ — 지휘본부</title>
+<title id="pageTitle">PropAI HQ — 지휘본부</title>
+<script src="config.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -108,7 +109,7 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 <div class="header">
   <div style="display:flex;align-items:center;gap:12px">
     <span class="menu-toggle" onclick="toggleSidebar()">☰</span>
-    <div class="logo">Prop<span>AI</span> HQ</div>
+    <div class="logo" id="brandLogo">Prop<span>AI</span> HQ</div>
   </div>
   <div class="header-right">
     <span id="clock"></span>
@@ -138,9 +139,13 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 </div>
 
 <script>
-// ===== CONFIG =====
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:8001' : 'https://api-hq.propai.ai';
+// ===== CONFIG (config.js에서 로드) =====
+const BRAND = CONFIG.BRAND_NAME;
+const API_BASE = CONFIG.API_BASE;
+
+// 브랜드명 동적 반영
+document.getElementById('pageTitle').textContent = CONFIG.HQ_TITLE;
+document.getElementById('brandLogo').innerHTML = `${BRAND.replace('AI', '<span>AI</span>')} HQ`;
 
 // ===== STAFF DATA =====
 const DEPARTMENTS = [

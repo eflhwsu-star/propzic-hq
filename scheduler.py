@@ -9,6 +9,8 @@ import threading
 import logging
 from datetime import datetime
 
+from brand_config import BRAND_NAME
+
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 import uvicorn
@@ -126,7 +128,7 @@ def start_scheduler():
 
     scheduler.start()
     logger.info("=" * 50)
-    logger.info("PropAI HQ Scheduler 시작 (Asia/Seoul)")
+    logger.info(f"{BRAND_NAME} HQ Scheduler 시작 (Asia/Seoul)")
     logger.info("  07:00 — 모니터링 (이경규+전현무)")
     logger.info("  08:00 — 인프라 점검 (하정우+최민식)")
     logger.info("  09:00 — 일일 브리핑 (이준서→강수미 카카오)")
@@ -142,7 +144,7 @@ def start_api_server():
 
 
 if __name__ == "__main__":
-    logger.info("PropAI HQ 시작...")
+    logger.info(f"{BRAND_NAME} HQ 시작...")
 
     # API 서버 스레드 실행
     api_thread = threading.Thread(target=start_api_server, daemon=True)
@@ -159,4 +161,4 @@ if __name__ == "__main__":
             time.sleep(60)
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
-        logger.info("PropAI HQ 종료")
+        logger.info(f"{BRAND_NAME} HQ 종료")
