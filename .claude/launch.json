@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "api-server",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["api_server.py"],
+      "port": 8001
+    },
+    {
+      "name": "scheduler",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["scheduler.py"],
+      "port": 8001
+    }
+  ]
+}
