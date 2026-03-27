@@ -2,6 +2,7 @@
 
 > 최초 생성: 2026-03-27
 > 도메인: hq.propzic.com
+> 슬로건: "부동산은 감이 아니다. 집값을 해독하는 유일한 로직, 프롭직."
 > 구글 드라이브 위치: 프롭직/propai-hq
 
 ## 프로젝트 개요
@@ -196,6 +197,7 @@ PROPZIC HQ는 34명 AI직원으로 구성된 가상 지휘본부입니다.
 | `BRAND_NAME` | PROPZIC | 영문 브랜드명 |
 | `BRAND_NAME_KR` | 프롭직 | 한글 브랜드명 |
 | `HQ_DOMAIN` | hq.propzic.com | HQ 도메인 |
+| `SLOGAN` | 부동산은 감이 아니다. 집값을 해독하는 유일한 로직, 프롭직. | 슬로건 |
 | `SERVICE_B2C` | 집값해독 | B2C 서비스명 |
 | `SERVICE_B2B` | 중개오토 | B2B 서비스명 |
 | `DEFAULT_MODEL` | claude-sonnet-4-20250514 | Claude API 모델 |
