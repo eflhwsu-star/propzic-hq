@@ -35,15 +35,24 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 .staff-item{display:flex;align-items:center;gap:8px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
 .staff-item:hover{background:var(--bg3)}
 .staff-item.active{background:var(--bg3);border-left-color:var(--gold)}
-.staff-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.staff-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s}
 .staff-dot.online{background:#4ade80}
 .staff-dot.idle{background:#facc15}
-.staff-dot.urgent{background:#ef4444}
+.staff-dot.urgent{background:#ef4444;animation:pulse-dot 1s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
 .staff-name{font-size:13px;font-weight:600;color:var(--text)}
 .staff-role{font-size:10px;color:var(--text2);margin-top:1px}
 
 /* MAIN */
 .main{margin-left:var(--sidebar-w);margin-top:56px;display:flex;flex-direction:column;height:calc(100vh - 56px)}
+
+/* TABS */
+.tab-bar{display:flex;background:var(--bg2);border-bottom:1px solid #2a3444;padding:0 20px}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden}
+.tab-panel.active{display:flex}
 
 /* CHAT HEADER */
 .chat-header{padding:12px 20px;background:var(--bg2);border-bottom:1px solid #2a3444;display:flex;align-items:center;gap:10px}
@@ -90,6 +99,52 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 .send-btn:hover{opacity:.85}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
 
+/* ===== COMMAND PANEL ===== */
+.cmd-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Presets */
+.cmd-presets{display:flex;gap:8px;padding:16px 20px 8px;flex-wrap:wrap}
+.cmd-preset-btn{padding:6px 14px;border-radius:20px;border:1px solid #3a4a5a;background:var(--bg3);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.cmd-preset-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Command Input */
+.cmd-input-area{padding:8px 20px 16px}
+.cmd-textarea{width:100%;background:var(--bg3);border:1px solid #3a4a5a;border-radius:12px;padding:12px 14px;color:var(--text);font-size:14px;resize:none;height:80px;font-family:inherit;outline:none;transition:border-color .2s}
+.cmd-textarea:focus{border-color:var(--gold)}
+.cmd-actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.cmd-hint{font-size:11px;color:var(--text2)}
+.cmd-submit{background:var(--gold);color:#0d1b2a;border:none;border-radius:12px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.cmd-submit:hover{opacity:.85}
+.cmd-submit:disabled{opacity:.4;cursor:not-allowed}
+
+/* Execution Flow */
+.cmd-flow{flex:1;overflow-y:auto;padding:0 20px 20px}
+.cmd-flow::-webkit-scrollbar{width:6px}
+.cmd-flow::-webkit-scrollbar-thumb{background:#3a4a5a;border-radius:3px}
+
+.flow-step{padding:12px 16px;margin-top:10px;border-radius:12px;animation:fadeIn .3s}
+.flow-step.ceo-judging{background:var(--bg2);border-left:3px solid var(--gold);color:var(--text2)}
+.flow-step.ceo-result{background:var(--bg2);border-left:3px solid var(--gold)}
+.flow-step .flow-label{font-size:12px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.flow-step .flow-body{font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.flow-step.staff-exec{background:var(--bg2);border-radius:12px;border:1px solid #2a3444}
+.flow-step .flow-priority{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;margin-left:8px}
+.flow-step .flow-assignments{margin-top:6px;font-size:12px;color:var(--text2)}
+.flow-done{text-align:center;padding:12px;color:#4ade80;font-weight:700;font-size:14px;animation:fadeIn .3s}
+.flow-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--text2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-right:4px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* History */
+.cmd-history{border-top:1px solid #2a3444;padding:12px 20px;max-height:180px;overflow-y:auto}
+.cmd-history::-webkit-scrollbar{width:4px}
+.cmd-history::-webkit-scrollbar-thumb{background:#3a4a5a;border-radius:2px}
+.cmd-history-title{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.cmd-history-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:background .15s;font-size:12px}
+.cmd-history-item:hover{background:var(--bg3)}
+.cmd-history-item .hist-priority{flex-shrink:0}
+.cmd-history-item .hist-text{flex:1;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmd-history-item .hist-time{color:var(--text2);font-size:11px;flex-shrink:0}
+
 /* MOBILE */
 .menu-toggle{display:none;cursor:pointer;font-size:22px;color:var(--gold)}
 @media(max-width:768px){
@@ -99,6 +154,9 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
   .menu-toggle{display:block}
   .chat-header-back{display:block}
   .msg{max-width:90%}
+  .cmd-presets{padding:12px 12px 6px}
+  .cmd-input-area{padding:6px 12px 12px}
+  .cmd-flow{padding:0 12px 12px}
   :root{--sidebar-w:260px}
 }
 </style>
@@ -122,19 +180,51 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 
 <!-- MAIN -->
 <div class="main">
-  <div class="chat-header">
-    <span class="chat-header-back" onclick="goBackToSidebar()">←</span>
-    <span class="chat-header-name" id="chatName">👑 이준서</span>
-    <span class="chat-header-role" id="chatRole">전체총괄·일일주간브리핑</span>
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('chat')">💬 대화</button>
+    <button class="tab-btn" onclick="switchTab('command')">📋 업무명령</button>
   </div>
-  <div class="messages" id="messages"></div>
-  <div class="typing" id="typing">
-    <div class="typing-dots"><span></span><span></span><span></span></div>
-    <span id="typingName">이준서 응답 중...</span>
+
+  <!-- TAB 1: CHAT (기존) -->
+  <div class="tab-panel active" id="tab-chat">
+    <div class="chat-header">
+      <span class="chat-header-back" onclick="goBackToSidebar()">←</span>
+      <span class="chat-header-name" id="chatName">👑 이준서</span>
+      <span class="chat-header-role" id="chatRole">전체총괄·일일주간브리핑</span>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="typing" id="typing">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+      <span id="typingName">이준서 응답 중...</span>
+    </div>
+    <div class="input-area">
+      <textarea id="userInput" placeholder="메시지를 입력하세요..." rows="1" onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">전송</button>
+    </div>
   </div>
-  <div class="input-area">
-    <textarea id="userInput" placeholder="메시지를 입력하세요..." rows="1" onkeydown="handleKey(event)"></textarea>
-    <button class="send-btn" id="sendBtn" onclick="sendMessage()">전송</button>
+
+  <!-- TAB 2: COMMAND -->
+  <div class="tab-panel" id="tab-command">
+    <div class="cmd-panel">
+      <!-- Presets -->
+      <div class="cmd-presets" id="cmdPresets"></div>
+      <!-- Input -->
+      <div class="cmd-input-area">
+        <textarea class="cmd-textarea" id="cmdInput" placeholder="업무명령을 입력하세요... (Ctrl+Enter로 전송)" onkeydown="handleCmdKey(event)"></textarea>
+        <div class="cmd-actions">
+          <span class="cmd-hint">Ctrl+Enter 전송 | 프리셋 클릭으로 빠른 명령</span>
+          <button class="cmd-submit" id="cmdSubmit" onclick="sendCommand()">CEO에게 전달 ▶</button>
+        </div>
+      </div>
+      <!-- Execution Flow -->
+      <div class="cmd-flow" id="cmdFlow"></div>
+      <!-- History -->
+      <div class="cmd-history" id="cmdHistory" style="display:none">
+        <div class="cmd-history-title">📜 최근 명령 히스토리</div>
+        <div id="cmdHistoryList"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -211,21 +301,37 @@ DEPARTMENTS.forEach(d => d.members.forEach(m => {
 const chatHistories = {};
 let currentStaff = '이준서';
 
+// Command history (세션 내 최근 10개)
+let commandHistory = [];
+
+// Currently executing staff (for sidebar highlight)
+let executingStaff = new Set();
+
+// ===== TABS =====
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick*="${tabName}"]`).classList.add('active');
+  document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
 // ===== SIDEBAR =====
 function renderSidebar() {
   const sb = document.getElementById('sidebar');
   sb.innerHTML = DEPARTMENTS.map(d => `
     <div class="dept-group">
       <div class="dept-label">${d.name}</div>
-      ${d.members.map(m => `
+      ${d.members.map(m => {
+        const dotClass = executingStaff.has(m.name) ? 'urgent' : m.dot;
+        return `
         <div class="staff-item ${m.name === currentStaff ? 'active' : ''}" onclick="selectStaff('${m.name}')">
-          <div class="staff-dot ${m.dot}"></div>
+          <div class="staff-dot ${dotClass}" id="dot-${m.name}"></div>
           <div>
             <div class="staff-name">${m.emoji} ${m.name}</div>
             <div class="staff-role">${m.role}</div>
           </div>
-        </div>
-      `).join('')}
+        </div>`;
+      }).join('')}
     </div>
   `).join('');
 }
@@ -239,6 +345,7 @@ function selectStaff(name) {
   renderSidebar();
   renderMessages();
   document.getElementById('sidebar').classList.remove('open');
+  switchTab('chat');
 }
 
 function renderMessages() {
@@ -266,7 +373,7 @@ function renderMessages() {
 
 function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
 
-// ===== SEND =====
+// ===== SEND (Chat) =====
 async function sendMessage() {
   const input = document.getElementById('userInput');
   const text = input.value.trim();
@@ -289,7 +396,6 @@ async function sendMessage() {
       chatHistories[currentStaff].push({ role: 'assistant', content: aiText });
       renderMessages();
       hideTyping();
-      // Interrupt check
       await checkInterrupts(text, aiText);
     } else {
       const s = ALL_STAFF[currentStaff];
@@ -333,7 +439,6 @@ async function streamChat(endpoint, body) {
     const { done, value } = await reader.read();
     if (done) break;
     const chunk = decoder.decode(value, { stream: true });
-    // Parse SSE
     const lines = chunk.split('\n');
     for (const line of lines) {
       if (line.startsWith('data: ')) {
@@ -347,7 +452,6 @@ async function streamChat(endpoint, body) {
         }
       }
     }
-    // Live update
     updateLiveMessage(full);
   }
   return full;
@@ -398,20 +502,221 @@ function showTyping(name) {
 }
 function hideTyping() {
   document.getElementById('typing').classList.remove('show');
-  // Remove live message
   const live = document.querySelector('.msg.live');
   if (live) live.classList.remove('live');
 }
 
-// ===== INPUT =====
+// ===== INPUT (Chat) =====
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  // Auto-resize
   setTimeout(() => {
     const t = e.target;
     t.style.height = '44px';
     t.style.height = Math.min(t.scrollHeight, 120) + 'px';
   }, 0);
+}
+
+// ===== COMMAND PANEL =====
+
+// Render presets
+function renderPresets() {
+  const box = document.getElementById('cmdPresets');
+  box.innerHTML = (CONFIG.COMMAND_PRESETS || []).map(p =>
+    `<button class="cmd-preset-btn" onclick="applyPreset('${p.text.replace(/'/g,"\\'")}')">${p.label}</button>`
+  ).join('');
+}
+
+function applyPreset(text) {
+  document.getElementById('cmdInput').value = text;
+  document.getElementById('cmdInput').focus();
+}
+
+function handleCmdKey(e) {
+  if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendCommand(); }
+}
+
+// Sidebar dot helpers
+function setStaffDot(name, state) {
+  if (state === 'executing') {
+    executingStaff.add(name);
+  } else {
+    executingStaff.delete(name);
+  }
+  renderSidebar();
+}
+
+// ===== SEND COMMAND =====
+async function sendCommand() {
+  const input = document.getElementById('cmdInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const btn = document.getElementById('cmdSubmit');
+  btn.disabled = true;
+  input.disabled = true;
+
+  const flow = document.getElementById('cmdFlow');
+  flow.innerHTML = '';
+
+  // Track this command for history
+  const cmdRecord = { text, time: new Date(), priority: '', results: [] };
+
+  try {
+    const res = await fetch(API_BASE + '/api/command', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command: text })
+    });
+    if (!res.ok) throw new Error('API error');
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let currentStaffText = {};
+    let currentStaffName = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6);
+        if (raw === '[DONE]') {
+          // All done
+          flow.innerHTML += `<div class="flow-done">✅ 업무 완료</div>`;
+          // Reset all executing dots
+          executingStaff.clear();
+          renderSidebar();
+          continue;
+        }
+
+        let parsed;
+        try { parsed = JSON.parse(raw); } catch { continue; }
+
+        if (parsed.phase === 'ceo_judging') {
+          flow.innerHTML += `<div class="flow-step ceo-judging" id="flow-ceo">
+            <div class="flow-label"><span class="flow-spinner"></span> 👑 이준서 CEO 판단 중...</div>
+          </div>`;
+          scrollFlow();
+
+        } else if (parsed.phase === 'ceo_result') {
+          cmdRecord.priority = parsed.priority || '';
+          const assignNames = (parsed.assignments || []).map(a => `${a.emoji || '💬'} ${a.name}`).join(', ');
+          const el = document.getElementById('flow-ceo');
+          if (el) {
+            el.className = 'flow-step ceo-result';
+            el.innerHTML = `
+              <div class="flow-label">👑 이준서 CEO 판단 완료</div>
+              <div class="flow-body">${escHtml(parsed.analysis || '')}</div>
+              <div style="margin-top:8px">
+                <span class="flow-priority">${parsed.priority || '🟢정상'}</span>
+                <span class="flow-assignments">담당: ${assignNames}</span>
+              </div>`;
+          }
+          scrollFlow();
+
+        } else if (parsed.phase === 'staff_start') {
+          currentStaffName = parsed.name;
+          currentStaffText[parsed.name] = '';
+          setStaffDot(parsed.name, 'executing');
+          const s = ALL_STAFF[parsed.name] || {};
+          flow.innerHTML += `<div class="flow-step staff-exec" id="flow-staff-${parsed.name}">
+            <div class="flow-label"><span class="flow-spinner"></span> ${parsed.emoji || s.emoji || '💬'} ${parsed.name} 실행 중...</div>
+            <div class="flow-body" style="font-size:12px;color:var(--text2);margin-bottom:6px">📌 ${escHtml(parsed.task || '')}</div>
+            <div class="flow-body staff-response"></div>
+          </div>`;
+          scrollFlow();
+
+        } else if (parsed.text && parsed.staff) {
+          currentStaffText[parsed.staff] = (currentStaffText[parsed.staff] || '') + parsed.text;
+          const el = document.querySelector(`#flow-staff-${parsed.staff} .staff-response`);
+          if (el) {
+            el.innerHTML = escHtml(currentStaffText[parsed.staff]);
+            scrollFlow();
+          }
+
+        } else if (parsed.phase === 'staff_done') {
+          setStaffDot(parsed.name, 'done');
+          cmdRecord.results.push({ name: parsed.name, text: currentStaffText[parsed.name] || '' });
+          // Remove spinner
+          const el = document.querySelector(`#flow-staff-${parsed.name} .flow-label`);
+          if (el) {
+            const s = ALL_STAFF[parsed.name] || {};
+            el.innerHTML = `✅ ${s.emoji || '💬'} ${parsed.name} 완료`;
+          }
+
+        } else if (parsed.phase === 'staff_error') {
+          setStaffDot(parsed.name, 'done');
+          const el = document.querySelector(`#flow-staff-${parsed.name} .staff-response`);
+          if (el) el.innerHTML = `<span style="color:#ef4444">⚠️ 오류: ${escHtml(parsed.message || '')}</span>`;
+
+        } else if (parsed.phase === 'error') {
+          flow.innerHTML += `<div class="flow-step ceo-judging" style="border-left-color:#ef4444">
+            <div class="flow-label" style="color:#ef4444">⚠️ ${escHtml(parsed.message || '오류 발생')}</div>
+          </div>`;
+        }
+      }
+    }
+  } catch (e) {
+    flow.innerHTML += `<div class="flow-step ceo-judging" style="border-left-color:#ef4444">
+      <div class="flow-label" style="color:#ef4444">⚠️ 서버 연결 실패. API 서버가 실행 중인지 확인해주세요.</div>
+    </div>`;
+  }
+
+  // Save to history
+  commandHistory.unshift(cmdRecord);
+  if (commandHistory.length > 10) commandHistory.pop();
+  renderHistory();
+
+  btn.disabled = false;
+  input.disabled = false;
+  input.value = '';
+}
+
+function scrollFlow() {
+  const flow = document.getElementById('cmdFlow');
+  flow.scrollTop = flow.scrollHeight;
+}
+
+// ===== COMMAND HISTORY =====
+function renderHistory() {
+  const box = document.getElementById('cmdHistory');
+  const list = document.getElementById('cmdHistoryList');
+  if (commandHistory.length === 0) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  list.innerHTML = commandHistory.map((h, i) => {
+    const time = h.time.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    const shortText = h.text.length > 40 ? h.text.slice(0, 40) + '...' : h.text;
+    const prio = h.priority || '🟢';
+    return `<div class="cmd-history-item" onclick="replayHistory(${i})">
+      <span class="hist-priority">${prio.slice(0, 2)}</span>
+      <span class="hist-text">${escHtml(shortText)}</span>
+      <span class="hist-time">${time}</span>
+    </div>`;
+  }).join('');
+}
+
+function replayHistory(idx) {
+  const h = commandHistory[idx];
+  if (!h) return;
+
+  const flow = document.getElementById('cmdFlow');
+  let html = `<div class="flow-step ceo-result">
+    <div class="flow-label">📜 히스토리: ${escHtml(h.text.slice(0, 60))}</div>
+    <div style="margin-top:4px"><span class="flow-priority">${h.priority || '🟢정상'}</span></div>
+  </div>`;
+
+  for (const r of h.results) {
+    const s = ALL_STAFF[r.name] || {};
+    html += `<div class="flow-step staff-exec">
+      <div class="flow-label">✅ ${s.emoji || '💬'} ${r.name} 결과</div>
+      <div class="flow-body staff-response">${escHtml(r.text)}</div>
+    </div>`;
+  }
+  flow.innerHTML = html;
+  scrollFlow();
 }
 
 // ===== CLOCK =====
@@ -443,6 +748,8 @@ function goBackToSidebar() { document.getElementById('sidebar').classList.add('o
 
 // ===== INIT =====
 renderSidebar();
+renderPresets();
+renderHistory();
 </script>
 </body>
 </html>

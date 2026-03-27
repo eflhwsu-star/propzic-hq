@@ -15,7 +15,10 @@ from fastapi.responses import StreamingResponse, JSONResponse
 import anthropic
 from dotenv import load_dotenv
 
-from brand_config import BRAND_NAME, SERVICE_B2C, SERVICE_B2B, HQ_DOMAIN, DEFAULT_MODEL
+from brand_config import (
+    BRAND_NAME, SERVICE_B2C, SERVICE_B2B, HQ_DOMAIN, DEFAULT_MODEL,
+    CEO_COMMAND_SYSTEM, EMPLOYEE_MAP,
+)
 
 load_dotenv()
 
@@ -252,6 +255,82 @@ async def generate_briefing_now():
         return {"status": "success", "briefing": result}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+def _parse_json_response(text: str) -> dict:
+    """Claude 응답에서 JSON 추출 (마크다운 코드블록 처리)"""
+    text = text.strip()
+    if "```json" in text:
+        text = text.split("```json")[1].split("```")[0].strip()
+    elif "```" in text:
+        text = text.split("```")[1].split("```")[0].strip()
+    return json.loads(text)
+
+
+@app.post("/api/command")
+async def command(request: Request):
+    """업무명령: CEO 판단 → 직원 실행 2단계 체인 (SSE 스트리밍)"""
+    body = await request.json()
+    command_text = body.get("command", "")
+
+    async def generate():
+        # === Phase 1: CEO 판단 ===
+        yield f"data: {json.dumps({'phase': 'ceo_judging'}, ensure_ascii=False)}\n\n"
+
+        try:
+            ceo_response = client.messages.create(
+                model=MODEL,
+                max_tokens=1024,
+                system=CEO_COMMAND_SYSTEM,
+                messages=[{"role": "user", "content": command_text}],
+            )
+            ceo_text = ceo_response.content[0].text.strip()
+            ceo_result = _parse_json_response(ceo_text)
+
+            yield f"data: {json.dumps({'phase': 'ceo_result', **ceo_result}, ensure_ascii=False)}\n\n"
+
+            assignments = ceo_result.get("assignments", [])
+            if not assignments:
+                yield f"data: {json.dumps({'phase': 'error', 'message': 'CEO가 담당자를 배정하지 않았습니다.'}, ensure_ascii=False)}\n\n"
+                yield "data: [DONE]\n\n"
+                return
+
+        except Exception as e:
+            yield f"data: {json.dumps({'phase': 'error', 'message': f'CEO 판단 오류: {str(e)}'}, ensure_ascii=False)}\n\n"
+            yield "data: [DONE]\n\n"
+            return
+
+        # === Phase 2: 직원 순차 실행 ===
+        for assignment in assignments:
+            staff_name = assignment.get("name", "")
+            staff_task = assignment.get("task", command_text)
+
+            # EMPLOYEE_MAP에서 정보 조회, 없으면 assignment 데이터 사용
+            emp = EMPLOYEE_MAP.get(staff_name, assignment)
+            role = emp.get("role", assignment.get("role", ""))
+            emoji = emp.get("emoji", assignment.get("emoji", "💬"))
+
+            yield f"data: {json.dumps({'phase': 'staff_start', 'name': staff_name, 'role': role, 'emoji': emoji, 'task': staff_task}, ensure_ascii=False)}\n\n"
+
+            try:
+                system_prompt = make_staff_system(staff_name, role)
+                with client.messages.stream(
+                    model=MODEL,
+                    max_tokens=4096,
+                    system=system_prompt,
+                    messages=[{"role": "user", "content": staff_task}],
+                ) as stream:
+                    for text in stream.text_stream:
+                        yield f"data: {json.dumps({'text': text, 'staff': staff_name}, ensure_ascii=False)}\n\n"
+
+                yield f"data: {json.dumps({'phase': 'staff_done', 'name': staff_name}, ensure_ascii=False)}\n\n"
+
+            except Exception as e:
+                yield f"data: {json.dumps({'phase': 'staff_error', 'name': staff_name, 'message': str(e)}, ensure_ascii=False)}\n\n"
+
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
 
 
 if __name__ == "__main__":
