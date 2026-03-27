@@ -1,5 +1,5 @@
 /**
- * PropAI HQ — 브랜드 및 글로벌 설정 상수
+ * PROPZIC HQ — 브랜드 및 글로벌 설정 상수
  * 브랜드명 변경 시 이 파일만 수정하면 전체 반영됩니다.
  *
  * 최초 생성: 2026-03-27
@@ -7,10 +7,10 @@
 
 const CONFIG = {
   // ===== 브랜드 =====
-  BRAND_NAME: "PropAI",
-  BRAND_NAME_KR: "프롭AI",
-  HQ_TITLE: "PropAI HQ — 지휘본부",
-  HQ_DOMAIN: "hq.propai.ai",
+  BRAND_NAME: "PROPZIC",
+  BRAND_NAME_KR: "프롭직",
+  HQ_TITLE: "PROPZIC HQ — 지휘본부",
+  HQ_DOMAIN: "hq.propzic.com",
 
   // ===== 서비스 =====
   SERVICE_B2C: "집값해독",
@@ -19,7 +19,7 @@ const CONFIG = {
   // ===== API =====
   API_BASE: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:8001'
-    : 'https://api-hq.propai.ai',
+    : 'https://api-hq.propzic.com',
 
   // ===== UI =====
   CEO_NAME: "이준서",

@@ -1,5 +1,5 @@
 """
-PropAI HQ Scheduler — Asia/Seoul 기준 자동화
+PROPZIC HQ Scheduler — Asia/Seoul 기준 자동화
 매일 07:00 모니터링 → 08:00 인프라 → 09:00 브리핑 생성+발송
 매주 월요일 09:00 주간 브리핑
 scheduler.py 실행 시 api_server.py도 함께 구동 (포트 8001)

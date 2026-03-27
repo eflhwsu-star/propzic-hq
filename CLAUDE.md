@@ -1,19 +1,19 @@
-# PropAI HQ 지휘본부
+# PROPZIC HQ 지휘본부
 
 > 최초 생성: 2026-03-27
-> 도메인: hq.propai.ai
-> 구글 드라이브 위치: 프롭AI/propai-hq
+> 도메인: hq.propzic.com
+> 구글 드라이브 위치: 프롭직/propai-hq
 
 ## 프로젝트 개요
 
-PropAI HQ는 34명 AI직원으로 구성된 가상 지휘본부입니다.
+PROPZIC HQ는 34명 AI직원으로 구성된 가상 지휘본부입니다.
 집값해독(B2C 부동산 데이터)과 중개오토(B2B 중개사 자동화) 두 서비스를 총괄 관리합니다.
 
 ## 배포 구조
 
 | 구성 | 배포 위치 |
 |------|-----------|
-| index.html (대시보드) | Cloudflare Pages → hq.propai.ai |
+| index.html (대시보드) | Cloudflare Pages → hq.propzic.com |
 | scheduler.py + api_server.py | 가비아 서버 (포트 8001) |
 | reports/ | 서버 로컬 저장 |
 | logs/ | 서버 로컬 저장 |
@@ -193,9 +193,9 @@ PropAI HQ는 34명 AI직원으로 구성된 가상 지휘본부입니다.
 ### 관리되는 상수
 | 상수 | 현재값 | 설명 |
 |------|--------|------|
-| `BRAND_NAME` | PropAI | 영문 브랜드명 |
-| `BRAND_NAME_KR` | 프롭AI | 한글 브랜드명 |
-| `HQ_DOMAIN` | hq.propai.ai | HQ 도메인 |
+| `BRAND_NAME` | PROPZIC | 영문 브랜드명 |
+| `BRAND_NAME_KR` | 프롭직 | 한글 브랜드명 |
+| `HQ_DOMAIN` | hq.propzic.com | HQ 도메인 |
 | `SERVICE_B2C` | 집값해독 | B2C 서비스명 |
 | `SERVICE_B2B` | 중개오토 | B2B 서비스명 |
 | `DEFAULT_MODEL` | claude-sonnet-4-20250514 | Claude API 모델 |
