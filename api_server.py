@@ -116,13 +116,13 @@ INTERRUPT_SYSTEM = f"""당신은 {BRAND_NAME} AI직원 코디네이터입니다.
 조세호(회계·비용관리), 염경환(개인정보보호·CISO), 김미경(CFO·재무전략)
 
 응답은 반드시 JSON만 반환:
-{
+{{
   "interrupts": [
-    {"name": "오건영", "role": "부동산투자전문가", "emoji": "💎", "message": "발언내용"},
-    {"name": "홍라희", "role": "투자분석", "emoji": "📈", "message": "발언내용"}
+    {{"name": "오건영", "role": "부동산투자전문가", "emoji": "💎", "message": "발언내용"}},
+    {{"name": "홍라희", "role": "투자분석", "emoji": "📈", "message": "발언내용"}}
   ]
-}
-관련 없으면: {"interrupts": []}"""
+}}
+관련 없으면: {{"interrupts": []}}"""
 
 
 def make_staff_system(name: str, role: str) -> str:
@@ -269,12 +269,17 @@ def _parse_json_response(text: str) -> dict:
 
 @app.post("/api/command")
 async def command(request: Request):
-    """업무명령: CEO 판단 → 직원 실행 2단계 체인 (SSE 스트리밍)"""
+    """업무명령: CEO 경유 또는 직접 지시 (SSE 스트리밍)
+    mode: "ceo" (기본) — CEO 판단 → 직원 실행 2단계 체인
+    mode: "direct" — CEO 건너뛰고 지정 직원 바로 실행
+    """
     body = await request.json()
     command_text = body.get("command", "")
+    mode = body.get("mode", "ceo")
+    assignee = body.get("assignee", "")  # direct 모드에서 직원 이름
 
-    async def generate():
-        # === Phase 1: CEO 판단 ===
+    async def generate_ceo():
+        """CEO 경유 모드"""
         yield f"data: {json.dumps({'phase': 'ceo_judging'}, ensure_ascii=False)}\n\n"
 
         try:
@@ -300,37 +305,60 @@ async def command(request: Request):
             yield "data: [DONE]\n\n"
             return
 
-        # === Phase 2: 직원 순차 실행 ===
+        # 직원 순차 실행
         for assignment in assignments:
-            staff_name = assignment.get("name", "")
-            staff_task = assignment.get("task", command_text)
-
-            # EMPLOYEE_MAP에서 정보 조회, 없으면 assignment 데이터 사용
-            emp = EMPLOYEE_MAP.get(staff_name, assignment)
-            role = emp.get("role", assignment.get("role", ""))
-            emoji = emp.get("emoji", assignment.get("emoji", "💬"))
-
-            yield f"data: {json.dumps({'phase': 'staff_start', 'name': staff_name, 'role': role, 'emoji': emoji, 'task': staff_task}, ensure_ascii=False)}\n\n"
-
-            try:
-                system_prompt = make_staff_system(staff_name, role)
-                with client.messages.stream(
-                    model=MODEL,
-                    max_tokens=4096,
-                    system=system_prompt,
-                    messages=[{"role": "user", "content": staff_task}],
-                ) as stream:
-                    for text in stream.text_stream:
-                        yield f"data: {json.dumps({'text': text, 'staff': staff_name}, ensure_ascii=False)}\n\n"
-
-                yield f"data: {json.dumps({'phase': 'staff_done', 'name': staff_name}, ensure_ascii=False)}\n\n"
-
-            except Exception as e:
-                yield f"data: {json.dumps({'phase': 'staff_error', 'name': staff_name, 'message': str(e)}, ensure_ascii=False)}\n\n"
+            async for chunk in _execute_staff(assignment, command_text):
+                yield chunk
 
         yield "data: [DONE]\n\n"
 
-    return StreamingResponse(generate(), media_type="text/event-stream")
+    async def generate_direct():
+        """직접 지시 모드 — CEO 판단 건너뛰고 바로 실행"""
+        emp = EMPLOYEE_MAP.get(assignee)
+        if not emp:
+            yield f"data: {json.dumps({'phase': 'error', 'message': f'직원을 찾을 수 없습니다: {assignee}'}, ensure_ascii=False)}\n\n"
+            yield "data: [DONE]\n\n"
+            return
+
+        yield f"data: {json.dumps({'phase': 'direct_start', 'name': assignee, 'role': emp['role'], 'emoji': emp['emoji']}, ensure_ascii=False)}\n\n"
+
+        assignment = {"name": assignee, "role": emp["role"], "emoji": emp["emoji"], "task": command_text}
+        async for chunk in _execute_staff(assignment, command_text):
+            yield chunk
+
+        yield "data: [DONE]\n\n"
+
+    if mode == "direct":
+        return StreamingResponse(generate_direct(), media_type="text/event-stream")
+    return StreamingResponse(generate_ceo(), media_type="text/event-stream")
+
+
+async def _execute_staff(assignment: dict, fallback_task: str):
+    """공통: 직원 1명 실행 → SSE 청크 yield"""
+    staff_name = assignment.get("name", "")
+    staff_task = assignment.get("task", fallback_task)
+
+    emp = EMPLOYEE_MAP.get(staff_name, assignment)
+    role = emp.get("role", assignment.get("role", ""))
+    emoji = emp.get("emoji", assignment.get("emoji", "💬"))
+
+    yield f"data: {json.dumps({'phase': 'staff_start', 'name': staff_name, 'role': role, 'emoji': emoji, 'task': staff_task}, ensure_ascii=False)}\n\n"
+
+    try:
+        system_prompt = make_staff_system(staff_name, role)
+        with client.messages.stream(
+            model=MODEL,
+            max_tokens=4096,
+            system=system_prompt,
+            messages=[{"role": "user", "content": staff_task}],
+        ) as stream:
+            for text in stream.text_stream:
+                yield f"data: {json.dumps({'text': text, 'staff': staff_name}, ensure_ascii=False)}\n\n"
+
+        yield f"data: {json.dumps({'phase': 'staff_done', 'name': staff_name}, ensure_ascii=False)}\n\n"
+
+    except Exception as e:
+        yield f"data: {json.dumps({'phase': 'staff_error', 'name': staff_name, 'message': str(e)}, ensure_ascii=False)}\n\n"
 
 
 if __name__ == "__main__":

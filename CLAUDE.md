@@ -121,11 +121,21 @@ PropAI HQ는 34명 AI직원으로 구성된 가상 지휘본부입니다.
 2. 배정된 직원이 순차적으로 업무 실행 (SSE 스트리밍)
 3. 사이드바에서 실행 중 직원 dot이 빨간색으로 하이라이트
 
+**두 가지 모드:**
+- `👑 CEO 경유` (mode: "ceo") — CEO 판단 → 직원 배정 → 실행
+- `🎯 직접 지시` (mode: "direct") — 드롭다운에서 직원 선택 → CEO 판단 없이 바로 실행
+
 **SSE 이벤트 플로우:**
-`ceo_judging` → `ceo_result` → `staff_start` → `text` (스트리밍) → `staff_done` → `[DONE]`
+- CEO 경유: `ceo_judging` → `ceo_result` → `staff_start` → `text` → `staff_done` → `[DONE]`
+- 직접 지시: `direct_start` → `staff_start` → `text` → `staff_done` → `[DONE]`
+
+**API 파라미터:** `POST /api/command`
+- `command`: 명령 텍스트
+- `mode`: `"ceo"` (기본) 또는 `"direct"`
+- `assignee`: 직접 지시 시 직원 이름
 
 **프리셋 버튼 (config.js):** 리스크분석, 마케팅, 법무, 보고, 경쟁사
-**명령 히스토리:** 세션 내 최근 10개 보관, 클릭 시 결과 재열람
+**명령 히스토리:** 세션 내 최근 10개 보관, 🎯 직접/🔴🟡🟢 CEO 경유 구분 표시
 
 **관련 상수:**
 - `brand_config.py` → `CEO_COMMAND_SYSTEM`, `EMPLOYEES_BY_DEPT`, `EMPLOYEE_MAP`

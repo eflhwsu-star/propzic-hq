@@ -145,6 +145,23 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 .cmd-history-item .hist-text{flex:1;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cmd-history-item .hist-time{color:var(--text2);font-size:11px;flex-shrink:0}
 
+/* CMD SUB-TABS */
+.cmd-subtabs{display:flex;gap:0;padding:0 20px;background:var(--bg2);border-bottom:1px solid #2a3444}
+.cmd-subtab{padding:8px 18px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s}
+.cmd-subtab:hover{color:var(--text)}
+.cmd-subtab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.cmd-subpanel{display:none;flex:1;flex-direction:column;overflow:hidden}
+.cmd-subpanel.active{display:flex}
+
+/* DIRECT SELECT */
+.direct-select-area{padding:12px 20px 0;display:flex;align-items:center;gap:10px}
+.direct-select-area label{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap}
+.direct-select{flex:1;background:var(--bg3);border:1px solid #3a4a5a;border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238899aa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.direct-select:focus{border-color:var(--gold)}
+.direct-select optgroup{background:var(--bg2);color:var(--gold);font-weight:700;font-size:12px}
+.direct-select option{background:var(--bg3);color:var(--text);padding:4px}
+.direct-badge{display:inline-block;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:700;background:#2a3f6b;color:#7dbaff}
+
 /* MOBILE */
 .menu-toggle{display:none;cursor:pointer;font-size:22px;color:var(--gold)}
 @media(max-width:768px){
@@ -207,19 +224,42 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
   <!-- TAB 2: COMMAND -->
   <div class="tab-panel" id="tab-command">
     <div class="cmd-panel">
-      <!-- Presets -->
-      <div class="cmd-presets" id="cmdPresets"></div>
-      <!-- Input -->
-      <div class="cmd-input-area">
-        <textarea class="cmd-textarea" id="cmdInput" placeholder="업무명령을 입력하세요... (Ctrl+Enter로 전송)" onkeydown="handleCmdKey(event)"></textarea>
-        <div class="cmd-actions">
-          <span class="cmd-hint">Ctrl+Enter 전송 | 프리셋 클릭으로 빠른 명령</span>
-          <button class="cmd-submit" id="cmdSubmit" onclick="sendCommand()">CEO에게 전달 ▶</button>
+      <!-- Sub-tabs: CEO 경유 / 직접 지시 -->
+      <div class="cmd-subtabs">
+        <button class="cmd-subtab active" onclick="switchCmdMode('ceo')">👑 CEO 경유</button>
+        <button class="cmd-subtab" onclick="switchCmdMode('direct')">🎯 직접 지시</button>
+      </div>
+
+      <!-- SUB-PANEL: CEO 경유 -->
+      <div class="cmd-subpanel active" id="cmd-ceo">
+        <div class="cmd-presets" id="cmdPresets"></div>
+        <div class="cmd-input-area">
+          <textarea class="cmd-textarea" id="cmdInput" placeholder="업무명령을 입력하세요... (Ctrl+Enter로 전송)" onkeydown="handleCmdKey(event)"></textarea>
+          <div class="cmd-actions">
+            <span class="cmd-hint">Ctrl+Enter 전송 | 프리셋 클릭으로 빠른 명령</span>
+            <button class="cmd-submit" id="cmdSubmit" onclick="sendCommand()">CEO에게 전달 ▶</button>
+          </div>
         </div>
       </div>
-      <!-- Execution Flow -->
+
+      <!-- SUB-PANEL: 직접 지시 -->
+      <div class="cmd-subpanel" id="cmd-direct">
+        <div class="direct-select-area">
+          <label>📌 수신자</label>
+          <select class="direct-select" id="directAssignee"></select>
+        </div>
+        <div class="cmd-input-area">
+          <textarea class="cmd-textarea" id="directInput" placeholder="이 직원에게 직접 지시할 내용을 입력하세요... (Ctrl+Enter로 전송)" onkeydown="handleDirectKey(event)"></textarea>
+          <div class="cmd-actions">
+            <span class="cmd-hint">Ctrl+Enter 전송 | CEO 판단 없이 바로 실행</span>
+            <button class="cmd-submit" id="directSubmit" onclick="sendDirectCommand()">직접 전달 ▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Execution Flow (공용) -->
       <div class="cmd-flow" id="cmdFlow"></div>
-      <!-- History -->
+      <!-- History (공용) -->
       <div class="cmd-history" id="cmdHistory" style="display:none">
         <div class="cmd-history-title">📜 최근 명령 히스토리</div>
         <div id="cmdHistoryList"></div>
@@ -535,6 +575,30 @@ function handleCmdKey(e) {
   if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendCommand(); }
 }
 
+function handleDirectKey(e) {
+  if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendDirectCommand(); }
+}
+
+// ===== CMD SUB-TABS =====
+function switchCmdMode(mode) {
+  document.querySelectorAll('.cmd-subtab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.cmd-subpanel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.cmd-subtab[onclick*="${mode}"]`).classList.add('active');
+  document.getElementById(`cmd-${mode}`).classList.add('active');
+}
+
+// ===== DIRECT ASSIGNEE DROPDOWN =====
+function renderDirectDropdown() {
+  const sel = document.getElementById('directAssignee');
+  sel.innerHTML = '<option value="" disabled selected>— 직원을 선택하세요 —</option>' +
+    DEPARTMENTS.map(d => {
+      const opts = d.members.map(m =>
+        `<option value="${m.name}">${m.emoji} ${m.name} — ${m.role}</option>`
+      ).join('');
+      return `<optgroup label="${d.name}">${opts}</optgroup>`;
+    }).join('');
+}
+
 // Sidebar dot helpers
 function setStaffDot(name, state) {
   if (state === 'executing') {
@@ -565,107 +629,17 @@ async function sendCommand() {
     const res = await fetch(API_BASE + '/api/command', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ command: text })
+      body: JSON.stringify({ command: text, mode: 'ceo' })
     });
     if (!res.ok) throw new Error('API error');
 
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let currentStaffText = {};
-    let currentStaffName = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split('\n');
-
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const raw = line.slice(6);
-        if (raw === '[DONE]') {
-          // All done
-          flow.innerHTML += `<div class="flow-done">✅ 업무 완료</div>`;
-          // Reset all executing dots
-          executingStaff.clear();
-          renderSidebar();
-          continue;
-        }
-
-        let parsed;
-        try { parsed = JSON.parse(raw); } catch { continue; }
-
-        if (parsed.phase === 'ceo_judging') {
-          flow.innerHTML += `<div class="flow-step ceo-judging" id="flow-ceo">
-            <div class="flow-label"><span class="flow-spinner"></span> 👑 이준서 CEO 판단 중...</div>
-          </div>`;
-          scrollFlow();
-
-        } else if (parsed.phase === 'ceo_result') {
-          cmdRecord.priority = parsed.priority || '';
-          const assignNames = (parsed.assignments || []).map(a => `${a.emoji || '💬'} ${a.name}`).join(', ');
-          const el = document.getElementById('flow-ceo');
-          if (el) {
-            el.className = 'flow-step ceo-result';
-            el.innerHTML = `
-              <div class="flow-label">👑 이준서 CEO 판단 완료</div>
-              <div class="flow-body">${escHtml(parsed.analysis || '')}</div>
-              <div style="margin-top:8px">
-                <span class="flow-priority">${parsed.priority || '🟢정상'}</span>
-                <span class="flow-assignments">담당: ${assignNames}</span>
-              </div>`;
-          }
-          scrollFlow();
-
-        } else if (parsed.phase === 'staff_start') {
-          currentStaffName = parsed.name;
-          currentStaffText[parsed.name] = '';
-          setStaffDot(parsed.name, 'executing');
-          const s = ALL_STAFF[parsed.name] || {};
-          flow.innerHTML += `<div class="flow-step staff-exec" id="flow-staff-${parsed.name}">
-            <div class="flow-label"><span class="flow-spinner"></span> ${parsed.emoji || s.emoji || '💬'} ${parsed.name} 실행 중...</div>
-            <div class="flow-body" style="font-size:12px;color:var(--text2);margin-bottom:6px">📌 ${escHtml(parsed.task || '')}</div>
-            <div class="flow-body staff-response"></div>
-          </div>`;
-          scrollFlow();
-
-        } else if (parsed.text && parsed.staff) {
-          currentStaffText[parsed.staff] = (currentStaffText[parsed.staff] || '') + parsed.text;
-          const el = document.querySelector(`#flow-staff-${parsed.staff} .staff-response`);
-          if (el) {
-            el.innerHTML = escHtml(currentStaffText[parsed.staff]);
-            scrollFlow();
-          }
-
-        } else if (parsed.phase === 'staff_done') {
-          setStaffDot(parsed.name, 'done');
-          cmdRecord.results.push({ name: parsed.name, text: currentStaffText[parsed.name] || '' });
-          // Remove spinner
-          const el = document.querySelector(`#flow-staff-${parsed.name} .flow-label`);
-          if (el) {
-            const s = ALL_STAFF[parsed.name] || {};
-            el.innerHTML = `✅ ${s.emoji || '💬'} ${parsed.name} 완료`;
-          }
-
-        } else if (parsed.phase === 'staff_error') {
-          setStaffDot(parsed.name, 'done');
-          const el = document.querySelector(`#flow-staff-${parsed.name} .staff-response`);
-          if (el) el.innerHTML = `<span style="color:#ef4444">⚠️ 오류: ${escHtml(parsed.message || '')}</span>`;
-
-        } else if (parsed.phase === 'error') {
-          flow.innerHTML += `<div class="flow-step ceo-judging" style="border-left-color:#ef4444">
-            <div class="flow-label" style="color:#ef4444">⚠️ ${escHtml(parsed.message || '오류 발생')}</div>
-          </div>`;
-        }
-      }
-    }
+    await processCommandStream(res, flow, cmdRecord);
   } catch (e) {
     flow.innerHTML += `<div class="flow-step ceo-judging" style="border-left-color:#ef4444">
       <div class="flow-label" style="color:#ef4444">⚠️ 서버 연결 실패. API 서버가 실행 중인지 확인해주세요.</div>
     </div>`;
   }
 
-  // Save to history
   commandHistory.unshift(cmdRecord);
   if (commandHistory.length > 10) commandHistory.pop();
   renderHistory();
@@ -673,6 +647,147 @@ async function sendCommand() {
   btn.disabled = false;
   input.disabled = false;
   input.value = '';
+}
+
+// ===== SEND DIRECT COMMAND =====
+async function sendDirectCommand() {
+  const input = document.getElementById('directInput');
+  const sel = document.getElementById('directAssignee');
+  const text = input.value.trim();
+  const assignee = sel.value;
+  if (!text || !assignee) { alert('수신자와 명령을 모두 입력해주세요.'); return; }
+
+  const btn = document.getElementById('directSubmit');
+  btn.disabled = true;
+  input.disabled = true;
+
+  const flow = document.getElementById('cmdFlow');
+  flow.innerHTML = '';
+
+  const s = ALL_STAFF[assignee] || {};
+  const cmdRecord = { text: `[직접] ${assignee}: ${text}`, time: new Date(), priority: '🎯직접', results: [], mode: 'direct' };
+
+  try {
+    const res = await fetch(API_BASE + '/api/command', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command: text, mode: 'direct', assignee })
+    });
+    if (!res.ok) throw new Error('API error');
+
+    await processCommandStream(res, flow, cmdRecord);
+  } catch (e) {
+    flow.innerHTML += `<div class="flow-step ceo-judging" style="border-left-color:#ef4444">
+      <div class="flow-label" style="color:#ef4444">⚠️ 서버 연결 실패. API 서버가 실행 중인지 확인해주세요.</div>
+    </div>`;
+  }
+
+  commandHistory.unshift(cmdRecord);
+  if (commandHistory.length > 10) commandHistory.pop();
+  renderHistory();
+
+  btn.disabled = false;
+  input.disabled = false;
+  input.value = '';
+}
+
+// ===== COMMON STREAM PROCESSOR =====
+async function processCommandStream(res, flow, cmdRecord) {
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let currentStaffText = {};
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    const lines = chunk.split('\n');
+
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      const raw = line.slice(6);
+      if (raw === '[DONE]') {
+        flow.innerHTML += `<div class="flow-done">✅ 업무 완료</div>`;
+        executingStaff.clear();
+        renderSidebar();
+        continue;
+      }
+
+      let parsed;
+      try { parsed = JSON.parse(raw); } catch { continue; }
+
+      if (parsed.phase === 'ceo_judging') {
+        flow.innerHTML += `<div class="flow-step ceo-judging" id="flow-ceo">
+          <div class="flow-label"><span class="flow-spinner"></span> 👑 이준서 CEO 판단 중...</div>
+        </div>`;
+        scrollFlow();
+
+      } else if (parsed.phase === 'ceo_result') {
+        cmdRecord.priority = parsed.priority || '';
+        const assignNames = (parsed.assignments || []).map(a => `${a.emoji || '💬'} ${a.name}`).join(', ');
+        const el = document.getElementById('flow-ceo');
+        if (el) {
+          el.className = 'flow-step ceo-result';
+          el.innerHTML = `
+            <div class="flow-label">👑 이준서 CEO 판단 완료</div>
+            <div class="flow-body">${escHtml(parsed.analysis || '')}</div>
+            <div style="margin-top:8px">
+              <span class="flow-priority">${parsed.priority || '🟢정상'}</span>
+              <span class="flow-assignments">담당: ${assignNames}</span>
+            </div>`;
+        }
+        scrollFlow();
+
+      } else if (parsed.phase === 'direct_start') {
+        // 직접 지시 모드 헤더
+        const s = ALL_STAFF[parsed.name] || {};
+        flow.innerHTML += `<div class="flow-step ceo-result" style="border-left-color:#5a9abf">
+          <div class="flow-label">🎯 직접 지시</div>
+          <div class="flow-body">수신자: ${parsed.emoji || s.emoji || '💬'} <strong>${parsed.name}</strong> (${parsed.role || s.role || ''})</div>
+          <div style="margin-top:4px"><span class="direct-badge">CEO 판단 건너뜀</span></div>
+        </div>`;
+        scrollFlow();
+
+      } else if (parsed.phase === 'staff_start') {
+        currentStaffText[parsed.name] = '';
+        setStaffDot(parsed.name, 'executing');
+        const s = ALL_STAFF[parsed.name] || {};
+        flow.innerHTML += `<div class="flow-step staff-exec" id="flow-staff-${parsed.name}">
+          <div class="flow-label"><span class="flow-spinner"></span> ${parsed.emoji || s.emoji || '💬'} ${parsed.name} 실행 중...</div>
+          <div class="flow-body" style="font-size:12px;color:var(--text2);margin-bottom:6px">📌 ${escHtml(parsed.task || '')}</div>
+          <div class="flow-body staff-response"></div>
+        </div>`;
+        scrollFlow();
+
+      } else if (parsed.text && parsed.staff) {
+        currentStaffText[parsed.staff] = (currentStaffText[parsed.staff] || '') + parsed.text;
+        const el = document.querySelector(`#flow-staff-${parsed.staff} .staff-response`);
+        if (el) {
+          el.innerHTML = escHtml(currentStaffText[parsed.staff]);
+          scrollFlow();
+        }
+
+      } else if (parsed.phase === 'staff_done') {
+        setStaffDot(parsed.name, 'done');
+        cmdRecord.results.push({ name: parsed.name, text: currentStaffText[parsed.name] || '' });
+        const el = document.querySelector(`#flow-staff-${parsed.name} .flow-label`);
+        if (el) {
+          const s = ALL_STAFF[parsed.name] || {};
+          el.innerHTML = `✅ ${s.emoji || '💬'} ${parsed.name} 완료`;
+        }
+
+      } else if (parsed.phase === 'staff_error') {
+        setStaffDot(parsed.name, 'done');
+        const el = document.querySelector(`#flow-staff-${parsed.name} .staff-response`);
+        if (el) el.innerHTML = `<span style="color:#ef4444">⚠️ 오류: ${escHtml(parsed.message || '')}</span>`;
+
+      } else if (parsed.phase === 'error') {
+        flow.innerHTML += `<div class="flow-step ceo-judging" style="border-left-color:#ef4444">
+          <div class="flow-label" style="color:#ef4444">⚠️ ${escHtml(parsed.message || '오류 발생')}</div>
+        </div>`;
+      }
+    }
+  }
 }
 
 function scrollFlow() {
@@ -689,7 +804,7 @@ function renderHistory() {
   list.innerHTML = commandHistory.map((h, i) => {
     const time = h.time.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
     const shortText = h.text.length > 40 ? h.text.slice(0, 40) + '...' : h.text;
-    const prio = h.priority || '🟢';
+    const prio = h.mode === 'direct' ? '🎯' : (h.priority || '🟢');
     return `<div class="cmd-history-item" onclick="replayHistory(${i})">
       <span class="hist-priority">${prio.slice(0, 2)}</span>
       <span class="hist-text">${escHtml(shortText)}</span>
@@ -749,6 +864,7 @@ function goBackToSidebar() { document.getElementById('sidebar').classList.add('o
 // ===== INIT =====
 renderSidebar();
 renderPresets();
+renderDirectDropdown();
 renderHistory();
 </script>
 </body>
