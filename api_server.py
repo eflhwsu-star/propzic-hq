@@ -6,6 +6,8 @@ PROPZIC HQ API Server — FastAPI (포트 8001)
 import os
 import json
 import glob
+import time
+import logging
 from datetime import datetime
 from pathlib import Path
 
@@ -42,6 +44,48 @@ app.add_middleware(
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 MODEL = DEFAULT_MODEL
+
+logger = logging.getLogger("propzic-hq")
+
+MAX_RETRIES = 3
+RETRY_DELAY = 3  # seconds
+
+
+def _is_retryable(e: Exception) -> bool:
+    """overloaded_error 또는 APIStatusError(5xx/529)인지 판별"""
+    if isinstance(e, anthropic.APIStatusError):
+        return e.status_code >= 500 or e.status_code == 529
+    err_str = str(e).lower()
+    return "overloaded" in err_str
+
+
+def call_anthropic_create(*, retries=MAX_RETRIES, **kwargs):
+    """client.messages.create 를 재시도 래핑 (non-streaming)"""
+    for attempt in range(1, retries + 1):
+        try:
+            return client.messages.create(**kwargs)
+        except Exception as e:
+            if attempt < retries and _is_retryable(e):
+                logger.warning(f"[retry {attempt}/{retries}] {e} — {RETRY_DELAY}s 후 재시도")
+                time.sleep(RETRY_DELAY)
+            else:
+                raise
+
+
+def call_anthropic_stream(*, retries=MAX_RETRIES, **kwargs):
+    """client.messages.stream 을 재시도 래핑 (streaming context manager)
+    사용: with call_anthropic_stream(model=..., ...) as stream:
+    """
+    for attempt in range(1, retries + 1):
+        try:
+            return client.messages.stream(**kwargs)
+        except Exception as e:
+            if attempt < retries and _is_retryable(e):
+                logger.warning(f"[retry {attempt}/{retries}] {e} — {RETRY_DELAY}s 후 재시도")
+                time.sleep(RETRY_DELAY)
+            else:
+                raise
+
 
 BASE_DIR = Path(__file__).parent
 REPORTS_DIR = BASE_DIR / "reports"
@@ -146,7 +190,7 @@ async def ceo_chat(request: Request):
     messages.append({"role": "user", "content": message})
 
     async def generate():
-        with client.messages.stream(
+        with call_anthropic_stream(
             model=MODEL,
             max_tokens=4096,
             system=CEO_SYSTEM,
@@ -168,7 +212,7 @@ async def interrupt(request: Request):
     prompt = f"오너 메시지: {owner_msg}\nCEO 이준서 응답: {ceo_response}"
 
     try:
-        response = client.messages.create(
+        response = call_anthropic_create(
             model=MODEL,
             max_tokens=1024,
             system=INTERRUPT_SYSTEM,
@@ -206,7 +250,7 @@ async def staff_chat(request: Request):
     messages.append({"role": "user", "content": message})
 
     async def generate():
-        with client.messages.stream(
+        with call_anthropic_stream(
             model=MODEL,
             max_tokens=4096,
             system=system_prompt,
@@ -283,7 +327,7 @@ async def command(request: Request):
         yield f"data: {json.dumps({'phase': 'ceo_judging'}, ensure_ascii=False)}\n\n"
 
         try:
-            ceo_response = client.messages.create(
+            ceo_response = call_anthropic_create(
                 model=MODEL,
                 max_tokens=1024,
                 system=CEO_COMMAND_SYSTEM,
@@ -346,7 +390,7 @@ async def _execute_staff(assignment: dict, fallback_task: str):
 
     try:
         system_prompt = make_staff_system(staff_name, role)
-        with client.messages.stream(
+        with call_anthropic_stream(
             model=MODEL,
             max_tokens=4096,
             system=system_prompt,
