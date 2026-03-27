@@ -10,6 +10,7 @@ BRAND_NAME = "PROPZIC"
 BRAND_NAME_KR = "프롭직"
 HQ_TITLE = "PROPZIC HQ 지휘본부"
 HQ_DOMAIN = "hq.propzic.com"
+SLOGAN = "부동산은 감이 아니다. 집값을 해독하는 유일한 로직, 프롭직."
 
 # ===== 서비스 =====
 SERVICE_B2C = "집값해독"
