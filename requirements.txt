@@ -1,0 +1,8 @@
+anthropic
+apscheduler
+fastapi
+uvicorn[standard]
+requests
+beautifulsoup4
+psutil
+python-dotenv

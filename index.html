@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PropAI HQ — 지휘본부</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d1b2a;--bg2:#1b2838;--bg3:#243447;
+  --gold:#c9a84c;--text:#e0e0e0;--text2:#8899aa;
+  --sidebar-w:260px;
+  --navy:#2a3f6b;--green:#2a6b4a;--blue:#2a4f8b;
+  --pink:#8b2a6b;--mint:#2a8b7a;--orange:#8b5a2a;--gray:#5a5a6b;
+  --purple:#6b2a8b;
+}
+html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;background:var(--bg);color:var(--text)}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--bg2);border-bottom:1px solid var(--gold);height:56px;position:fixed;top:0;left:0;right:0;z-index:100}
+.logo{font-size:20px;font-weight:bold;color:var(--gold)}
+.logo span{color:var(--text)}
+.header-right{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text2)}
+.briefing-badge{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600}
+.briefing-badge.ready{background:#2a6b4a;color:#7dffba}
+.briefing-badge.pending{background:#6b5a2a;color:#ffd97d}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:56px;left:0;bottom:0;width:var(--sidebar-w);background:var(--bg2);overflow-y:auto;border-right:1px solid #2a3444;z-index:90;transition:transform .3s}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:#3a4a5a;border-radius:2px}
+.dept-group{margin:4px 0}
+.dept-label{font-size:11px;font-weight:700;color:var(--gold);padding:10px 16px 4px;text-transform:uppercase;letter-spacing:1px}
+.staff-item{display:flex;align-items:center;gap:8px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.staff-item:hover{background:var(--bg3)}
+.staff-item.active{background:var(--bg3);border-left-color:var(--gold)}
+.staff-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.staff-dot.online{background:#4ade80}
+.staff-dot.idle{background:#facc15}
+.staff-dot.urgent{background:#ef4444}
+.staff-name{font-size:13px;font-weight:600;color:var(--text)}
+.staff-role{font-size:10px;color:var(--text2);margin-top:1px}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);margin-top:56px;display:flex;flex-direction:column;height:calc(100vh - 56px)}
+
+/* CHAT HEADER */
+.chat-header{padding:12px 20px;background:var(--bg2);border-bottom:1px solid #2a3444;display:flex;align-items:center;gap:10px}
+.chat-header-name{font-size:16px;font-weight:700}
+.chat-header-role{font-size:12px;color:var(--text2)}
+.chat-header-back{display:none;cursor:pointer;font-size:18px;margin-right:6px}
+
+/* MESSAGES */
+.messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.messages::-webkit-scrollbar{width:6px}
+.messages::-webkit-scrollbar-thumb{background:#3a4a5a;border-radius:3px}
+
+.msg{max-width:75%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.owner{align-self:flex-end;background:#2a4f8b;border-radius:16px 16px 4px 16px}
+.msg.ai{align-self:flex-start;background:var(--bg2);border-radius:16px 16px 16px 4px}
+.msg-label{font-size:11px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.msg-content{font-size:14px}
+
+/* BUBBLE COLORS */
+.border-gold{border:1.5px solid #c9a84c}.border-purple{border:1.5px solid #9b7abf}
+.border-navy{border:1.5px solid #5a7abf}.border-green{border:1.5px solid #5abf7a}
+.border-blue{border:1.5px solid #5a9abf}.border-pink{border:1.5px solid #bf5a9a}
+.border-mint{border:1.5px solid #5abfaf}.border-orange{border:1.5px solid #bf8a5a}
+.border-gray{border:1.5px solid #8a8a9b}
+
+/* INTERRUPT */
+.msg.interrupt{background:var(--bg3);border-left:3px solid var(--gold);cursor:pointer}
+.msg.interrupt:hover{background:#2a3a4f}
+
+/* TYPING INDICATOR */
+.typing{display:none;align-self:flex-start;padding:12px 16px;background:var(--bg2);border-radius:16px;font-size:13px;color:var(--text2)}
+.typing.show{display:flex;align-items:center;gap:8px}
+.typing-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--text2);animation:blink 1.4s infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+
+/* INPUT */
+.input-area{padding:12px 20px;background:var(--bg2);border-top:1px solid #2a3444;display:flex;gap:10px}
+.input-area textarea{flex:1;background:var(--bg3);border:1px solid #3a4a5a;border-radius:12px;padding:10px 14px;color:var(--text);font-size:14px;resize:none;height:44px;max-height:120px;font-family:inherit;outline:none;transition:border-color .2s}
+.input-area textarea:focus{border-color:var(--gold)}
+.send-btn{background:var(--gold);color:#0d1b2a;border:none;border-radius:12px;padding:0 20px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.send-btn:hover{opacity:.85}
+.send-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* MOBILE */
+.menu-toggle{display:none;cursor:pointer;font-size:22px;color:var(--gold)}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .menu-toggle{display:block}
+  .chat-header-back{display:block}
+  .msg{max-width:90%}
+  :root{--sidebar-w:260px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="menu-toggle" onclick="toggleSidebar()">☰</span>
+    <div class="logo">Prop<span>AI</span> HQ</div>
+  </div>
+  <div class="header-right">
+    <span id="clock"></span>
+    <span class="briefing-badge pending" id="briefingBadge">브리핑 대기</span>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar"></div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="chat-header">
+    <span class="chat-header-back" onclick="goBackToSidebar()">←</span>
+    <span class="chat-header-name" id="chatName">👑 이준서</span>
+    <span class="chat-header-role" id="chatRole">전체총괄·일일주간브리핑</span>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="typing" id="typing">
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    <span id="typingName">이준서 응답 중...</span>
+  </div>
+  <div class="input-area">
+    <textarea id="userInput" placeholder="메시지를 입력하세요..." rows="1" onkeydown="handleKey(event)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">전송</button>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8001' : 'https://api-hq.propai.ai';
+
+// ===== STAFF DATA =====
+const DEPARTMENTS = [
+  { name: 'C-Suite', color: 'gold', members: [
+    { name: '이준서', role: '전체총괄·일일주간브리핑', emoji: '👑', dot: 'online' },
+    { name: '강수미', role: '일정관리·카카오브리핑발송·CEO보좌', emoji: '💜', dot: 'online' },
+  ]},
+  { name: '법무·컴플라이언스', color: 'navy', members: [
+    { name: '한동훈', role: '법무팀장·계약검토·법률자문', emoji: '⚖️', dot: 'online' },
+    { name: '김능환', role: '판사출신변호사·부동산분쟁·소송', emoji: '🔨', dot: 'online' },
+    { name: '채동욱', role: '검사출신변호사·사기방지·수사대응', emoji: '🛡️', dot: 'online' },
+    { name: '안철수', role: 'IP·특허관리·상표등록', emoji: '💡', dot: 'online' },
+    { name: '장영실', role: '변리사·서비스특허·IP출원', emoji: '📋', dot: 'online' },
+    { name: '박성수', role: '퇴직경찰30년·이상거래탐지·범죄예방', emoji: '🚔', dot: 'online' },
+  ]},
+  { name: '부동산현장전문가', color: 'green', members: [
+    { name: '함영진', role: '공인중개사고문·현장중개실무자문', emoji: '🏠', dot: 'online' },
+    { name: '박원갑', role: '감정평가사·시세·적정가격검토', emoji: '📊', dot: 'online' },
+    { name: '김현정', role: '세무사·양도세·취득세·절세전략', emoji: '🧾', dot: 'online' },
+    { name: '이헌재', role: '금융전문가·금리분석·대출DSR·LTV', emoji: '🏦', dot: 'online' },
+    { name: '유현준', role: '건축사·건물가치·리모델링·건축법', emoji: '🏗️', dot: 'online' },
+    { name: '오세훈', role: '도시계획·재개발·재건축·개발호재', emoji: '🌆', dot: 'online' },
+    { name: '김경란', role: '경매전문가·낙찰가분석·명도절차', emoji: '🔔', dot: 'online' },
+    { name: '이순신', role: '보험전문가·화재보험·임대인배상', emoji: '🛡️', dot: 'online' },
+  ]},
+  { name: '기술팀', color: 'blue', members: [
+    { name: '하정우', role: '인프라팀장·서버·배포', emoji: '🖥️', dot: 'online' },
+    { name: '최민식', role: '보안·기술이슈감시·취약점분석', emoji: '🔒', dot: 'online' },
+    { name: '손석희', role: '데이터분석·지표모니터링·통계', emoji: '📈', dot: 'online' },
+  ]},
+  { name: '마케팅팀', color: 'pink', members: [
+    { name: '전지현', role: '마케팅팀장·광고기획·캠페인관리', emoji: '📣', dot: 'online' },
+    { name: '이윤서', role: '바이럴마케팅·SNS·인플루언서', emoji: '🔥', dot: 'online' },
+    { name: '김선태', role: '홍보PR·언론대응', emoji: '📰', dot: 'online' },
+    { name: '송지효', role: '콘텐츠제작·블로그·뉴스레터', emoji: '✍️', dot: 'online' },
+    { name: '김범수', role: '그로스해킹·앱지표·퍼널최적화', emoji: '🚀', dot: 'online' },
+  ]},
+  { name: '고객경험팀', color: 'mint', members: [
+    { name: '신동엽', role: 'CS팀장·고객지원·VOC관리', emoji: '🎧', dot: 'online' },
+    { name: '장원영', role: 'UX디자인·사용자경험·UI개선', emoji: '🎨', dot: 'online' },
+    { name: '이경규', role: '서비스반응·리뷰수집·모니터링', emoji: '👁️', dot: 'online' },
+  ]},
+  { name: '전략·인텔팀', color: 'orange', members: [
+    { name: '전현무', role: '경쟁사인텔팀장·크롤링·시장분석', emoji: '🕵️', dot: 'online' },
+    { name: '이재명', role: '부동산정책·법령리서치·규제변화', emoji: '📜', dot: 'online' },
+    { name: '홍라희', role: '투자분석·거시경제·수익률·포트폴리오', emoji: '📈', dot: 'online' },
+    { name: '오건영', role: '부동산투자전문가·아파트·재개발·상가·토지·NPL·경매', emoji: '💎', dot: 'online' },
+  ]},
+  { name: '경영지원팀', color: 'gray', members: [
+    { name: '조세호', role: '세금·회계·비용관리', emoji: '🧮', dot: 'online' },
+    { name: '염경환', role: '개인정보보호·CISO·GDPR·보안정책', emoji: '🔐', dot: 'online' },
+    { name: '김미경', role: 'CFO·재무전략·투자유치·IR·수익모델', emoji: '💰', dot: 'online' },
+  ]},
+];
+
+// All staff flat
+const ALL_STAFF = {};
+DEPARTMENTS.forEach(d => d.members.forEach(m => {
+  ALL_STAFF[m.name] = { ...m, dept: d.name, color: d.color };
+}));
+
+// Chat histories per staff
+const chatHistories = {};
+let currentStaff = '이준서';
+
+// ===== SIDEBAR =====
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = DEPARTMENTS.map(d => `
+    <div class="dept-group">
+      <div class="dept-label">${d.name}</div>
+      ${d.members.map(m => `
+        <div class="staff-item ${m.name === currentStaff ? 'active' : ''}" onclick="selectStaff('${m.name}')">
+          <div class="staff-dot ${m.dot}"></div>
+          <div>
+            <div class="staff-name">${m.emoji} ${m.name}</div>
+            <div class="staff-role">${m.role}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+// ===== CHAT =====
+function selectStaff(name) {
+  currentStaff = name;
+  const s = ALL_STAFF[name];
+  document.getElementById('chatName').textContent = `${s.emoji} ${name}`;
+  document.getElementById('chatRole').textContent = s.role;
+  renderSidebar();
+  renderMessages();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function renderMessages() {
+  const box = document.getElementById('messages');
+  const history = chatHistories[currentStaff] || [];
+  box.innerHTML = history.map(m => {
+    if (m.role === 'user') {
+      return `<div class="msg owner"><div class="msg-content">${escHtml(m.content)}</div></div>`;
+    }
+    if (m.role === 'interrupt') {
+      const s = ALL_STAFF[m.name] || {};
+      return `<div class="msg ai interrupt border-${s.color || 'gold'}" onclick="selectStaff('${m.name}')">
+        <div class="msg-label">${s.emoji || '💬'} ${m.name} (${m.staffRole || ''})</div>
+        <div class="msg-content">${escHtml(m.content)}</div>
+      </div>`;
+    }
+    const s = ALL_STAFF[currentStaff] || {};
+    return `<div class="msg ai border-${s.color || 'gold'}">
+      <div class="msg-label">${s.emoji || '💬'} ${currentStaff} (${s.role || ''})</div>
+      <div class="msg-content">${escHtml(m.content)}</div>
+    </div>`;
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
+// ===== SEND =====
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = '44px';
+
+  if (!chatHistories[currentStaff]) chatHistories[currentStaff] = [];
+  chatHistories[currentStaff].push({ role: 'user', content: text });
+  renderMessages();
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  showTyping(currentStaff);
+
+  try {
+    let aiText = '';
+    if (currentStaff === '이준서') {
+      aiText = await streamChat('/api/ceo/chat', { message: text, history: getApiHistory() });
+      chatHistories[currentStaff].push({ role: 'assistant', content: aiText });
+      renderMessages();
+      hideTyping();
+      // Interrupt check
+      await checkInterrupts(text, aiText);
+    } else {
+      const s = ALL_STAFF[currentStaff];
+      aiText = await streamChat('/api/staff/chat', {
+        staff_name: currentStaff,
+        role: s.role,
+        message: text,
+        history: getApiHistory()
+      });
+      chatHistories[currentStaff].push({ role: 'assistant', content: aiText });
+      renderMessages();
+    }
+  } catch (e) {
+    chatHistories[currentStaff].push({ role: 'assistant', content: '⚠️ 서버 연결 실패. API 서버가 실행 중인지 확인해주세요.' });
+    renderMessages();
+  }
+  hideTyping();
+  btn.disabled = false;
+}
+
+function getApiHistory() {
+  const h = chatHistories[currentStaff] || [];
+  return h.filter(m => m.role === 'user' || m.role === 'assistant').slice(-10).map(m => ({
+    role: m.role, content: m.content
+  }));
+}
+
+async function streamChat(endpoint, body) {
+  const res = await fetch(API_BASE + endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('API error');
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let full = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    // Parse SSE
+    const lines = chunk.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        const data = line.slice(6);
+        if (data === '[DONE]') break;
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.text) full += parsed.text;
+        } catch {
+          full += data;
+        }
+      }
+    }
+    // Live update
+    updateLiveMessage(full);
+  }
+  return full;
+}
+
+function updateLiveMessage(text) {
+  const box = document.getElementById('messages');
+  const s = ALL_STAFF[currentStaff] || {};
+  let live = box.querySelector('.msg.live');
+  if (!live) {
+    live = document.createElement('div');
+    live.className = `msg ai live border-${s.color || 'gold'}`;
+    live.innerHTML = `<div class="msg-label">${s.emoji || '💬'} ${currentStaff} (${s.role || ''})</div><div class="msg-content"></div>`;
+    box.appendChild(live);
+  }
+  live.querySelector('.msg-content').innerHTML = escHtml(text);
+  box.scrollTop = box.scrollHeight;
+}
+
+async function checkInterrupts(ownerMsg, ceoResponse) {
+  try {
+    const res = await fetch(API_BASE + '/api/interrupt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: ownerMsg, ceo_response: ceoResponse })
+    });
+    const data = await res.json();
+    if (data.interrupts && data.interrupts.length > 0) {
+      for (const intr of data.interrupts) {
+        chatHistories[currentStaff].push({
+          role: 'interrupt',
+          name: intr.name,
+          staffRole: intr.role,
+          content: intr.message
+        });
+      }
+      renderMessages();
+    }
+  } catch (e) {
+    console.log('Interrupt check failed:', e);
+  }
+}
+
+// ===== TYPING =====
+function showTyping(name) {
+  document.getElementById('typing').classList.add('show');
+  document.getElementById('typingName').textContent = name + ' 응답 중...';
+}
+function hideTyping() {
+  document.getElementById('typing').classList.remove('show');
+  // Remove live message
+  const live = document.querySelector('.msg.live');
+  if (live) live.classList.remove('live');
+}
+
+// ===== INPUT =====
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  // Auto-resize
+  setTimeout(() => {
+    const t = e.target;
+    t.style.height = '44px';
+    t.style.height = Math.min(t.scrollHeight, 120) + 'px';
+  }, 0);
+}
+
+// ===== CLOCK =====
+function updateClock() {
+  const now = new Date();
+  const opts = { year:'numeric', month:'2-digit', day:'2-digit', weekday:'short', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false };
+  document.getElementById('clock').textContent = now.toLocaleString('ko-KR', opts);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ===== BRIEFING CHECK =====
+async function checkBriefing() {
+  try {
+    const res = await fetch(API_BASE + '/api/briefing/today');
+    const data = await res.json();
+    const badge = document.getElementById('briefingBadge');
+    if (data.briefing && data.briefing !== '오늘 브리핑 미생성') {
+      badge.textContent = '오전 브리핑 완료';
+      badge.className = 'briefing-badge ready';
+    }
+  } catch {}
+}
+checkBriefing();
+
+// ===== MOBILE =====
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function goBackToSidebar() { document.getElementById('sidebar').classList.add('open'); }
+
+// ===== INIT =====
+renderSidebar();
+</script>
+</body>
+</html>
