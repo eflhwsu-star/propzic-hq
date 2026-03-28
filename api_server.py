@@ -465,6 +465,47 @@ async def debate_participants():
     })
 
 
+# ===== WORKER ENDPOINTS =====
+
+@app.post("/api/worker/{worker_name}")
+async def run_worker(worker_name: str):
+    """직원 업무 즉시 실행 (UI 버튼용)"""
+    workers = {
+        "josecho": ("조세호", "🧮"),
+        "hamyoungjin": ("함영진", "🏠"),
+        "okungyoung": ("오건영", "💹"),
+    }
+
+    if worker_name not in workers:
+        return JSONResponse({"error": f"알 수 없는 직원: {worker_name}"}, status_code=400)
+
+    display_name, emoji = workers[worker_name]
+
+    try:
+        if worker_name == "josecho":
+            from workers.josecho import run as w_run
+            result = w_run()
+        elif worker_name == "hamyoungjin":
+            from workers.hamyoungjin import run as w_run
+            result = w_run()
+        elif worker_name == "okungyoung":
+            from workers.okungyoung import run as w_run
+            result = w_run("weekly")
+
+        return JSONResponse({
+            "worker": worker_name,
+            "name": display_name,
+            "emoji": emoji,
+            "result": result,
+            "timestamp": datetime.now().isoformat(),
+        })
+    except Exception as e:
+        return JSONResponse({
+            "worker": worker_name,
+            "error": str(e),
+        }, status_code=500)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)

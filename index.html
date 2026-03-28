@@ -100,6 +100,25 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 .send-btn:hover{opacity:.85}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
 
+/* ===== WORKER REPORT BUTTONS ===== */
+.worker-bar{display:flex;gap:8px;padding:10px 20px;background:var(--bg2);border-bottom:1px solid #2a3444;flex-wrap:wrap;align-items:center}
+.worker-bar-label{font-size:11px;font-weight:700;color:var(--gold);margin-right:4px}
+.worker-btn{padding:6px 14px;border-radius:20px;border:1px solid #3a4a5a;background:var(--bg3);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.worker-btn:hover{border-color:var(--gold);color:var(--gold)}
+.worker-btn:disabled{opacity:.4;cursor:not-allowed}
+.worker-btn.loading{border-color:var(--gold);color:var(--gold)}
+
+/* Worker result overlay */
+.worker-result-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center}
+.worker-result-overlay.show{display:flex}
+.worker-result-box{background:var(--bg2);border:1px solid var(--gold);border-radius:16px;padding:20px;width:90%;max-width:560px;max-height:80vh;overflow-y:auto}
+.worker-result-box::-webkit-scrollbar{width:6px}
+.worker-result-box::-webkit-scrollbar-thumb{background:#3a4a5a;border-radius:3px}
+.worker-result-box h3{color:var(--gold);font-size:15px;margin-bottom:12px}
+.worker-result-box .wr-content{font-size:14px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.worker-result-box .wr-close{display:block;margin-top:16px;text-align:center;padding:8px 24px;background:var(--bg3);border:1px solid #3a4a5a;border-radius:10px;color:var(--text);font-size:13px;cursor:pointer}
+.worker-result-box .wr-close:hover{border-color:var(--gold);color:var(--gold)}
+
 /* ===== COMMAND PANEL ===== */
 .cmd-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
@@ -278,6 +297,23 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
     <button class="tab-btn active" onclick="switchTab('chat')">💬 대화</button>
     <button class="tab-btn" onclick="switchTab('command')">📋 업무명령</button>
     <button class="tab-btn" onclick="switchTab('debate')">🗣️ 직원토론</button>
+  </div>
+
+  <!-- WORKER REPORT BUTTONS -->
+  <div class="worker-bar">
+    <span class="worker-bar-label">📊 지금 보고받기</span>
+    <button class="worker-btn" id="btn-josecho" onclick="runWorker('josecho','🧮 조세호 보고')">🧮 조세호 보고</button>
+    <button class="worker-btn" id="btn-hamyoungjin" onclick="runWorker('hamyoungjin','🏠 함영진 브리핑')">🏠 함영진 브리핑</button>
+    <button class="worker-btn" id="btn-okungyoung" onclick="runWorker('okungyoung','💹 오건영 KB분석')">💹 오건영 KB분석</button>
+  </div>
+
+  <!-- Worker result modal -->
+  <div class="worker-result-overlay" id="workerResultOverlay">
+    <div class="worker-result-box">
+      <h3 id="workerResultTitle"></h3>
+      <div class="wr-content" id="workerResultContent"></div>
+      <button class="wr-close" onclick="closeWorkerResult()">닫기</button>
+    </div>
   </div>
 
   <!-- TAB 1: CHAT (기존) -->
@@ -1003,6 +1039,42 @@ checkBriefing();
 // ===== MOBILE =====
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function goBackToSidebar() { document.getElementById('sidebar').classList.add('open'); }
+
+// ===== WORKER REPORT =====
+async function runWorker(name, label) {
+  const btn = document.getElementById('btn-' + name);
+  const origText = btn.textContent;
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.textContent = label + ' 실행중...';
+
+  try {
+    const res = await fetch(API_BASE + '/api/worker/' + name, { method: 'POST' });
+    const data = await res.json();
+
+    if (data.error) {
+      showWorkerResult(label + ' 오류', '⚠️ ' + data.error);
+    } else {
+      showWorkerResult(data.emoji + ' ' + data.name + ' 보고', data.result);
+    }
+  } catch (e) {
+    showWorkerResult(label + ' 오류', '⚠️ 서버 연결 실패: ' + e.message);
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  btn.textContent = origText;
+}
+
+function showWorkerResult(title, content) {
+  document.getElementById('workerResultTitle').textContent = title;
+  document.getElementById('workerResultContent').innerHTML = escHtml(content);
+  document.getElementById('workerResultOverlay').classList.add('show');
+}
+
+function closeWorkerResult() {
+  document.getElementById('workerResultOverlay').classList.remove('show');
+}
 
 // ===== DEBATE =====
 

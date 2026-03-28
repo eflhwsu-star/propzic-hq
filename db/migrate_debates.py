@@ -1,6 +1,6 @@
 """
-PROPZIC HQ — 토론 시스템 SQLite 마이그레이션
-hq_debates + hq_debate_messages 테이블 생성
+PROPZIC HQ — SQLite 마이그레이션
+hq_debates + hq_debate_messages + kb_price_data 테이블 생성
 
 사용법:
   python db/migrate_debates.py        # 직접 실행
@@ -60,6 +60,41 @@ def migrate():
             ON hq_debates(created_at DESC);
         CREATE INDEX IF NOT EXISTS idx_debate_messages_debate
             ON hq_debate_messages(debate_id, created_at);
+
+        -- KB시세 데이터 테이블
+        CREATE TABLE IF NOT EXISTS kb_price_data (
+            id TEXT PRIMARY KEY,
+            publish_date TEXT NOT NULL,
+            data_type TEXT NOT NULL,
+            nationwide_index REAL,
+            seoul_index REAL,
+            metropolitan_index REAL,
+            nationwide_mom REAL,
+            seoul_mom REAL,
+            metropolitan_mom REAL,
+            nationwide_yoy REAL,
+            seoul_yoy REAL,
+            metropolitan_yoy REAL,
+            raw_summary TEXT,
+            analysis TEXT,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_kb_price_date
+            ON kb_price_data(publish_date DESC);
+
+        -- 직원 업무 실행 로그
+        CREATE TABLE IF NOT EXISTS worker_logs (
+            id TEXT PRIMARY KEY,
+            worker_name TEXT NOT NULL,
+            status TEXT DEFAULT 'success',
+            result_summary TEXT,
+            kakao_sent INTEGER DEFAULT 0,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_worker_logs_created
+            ON worker_logs(created_at DESC);
     """)
 
     conn.commit()

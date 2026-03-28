@@ -20,6 +20,9 @@ from ai_team.infra_agent import run as infra_run
 from ai_team.ceo_agent import generate_daily_briefing, generate_weekly_briefing
 from ai_team.secretary import send_briefing
 from hq_debate_engine import run_debate
+from workers.josecho import run as josecho_run
+from workers.hamyoungjin import run as hamyoungjin_run
+from workers.okungyoung import run as okungyoung_run
 
 logging.basicConfig(
     level=logging.INFO,
@@ -91,6 +94,62 @@ def job_weekly_briefing():
         logger.error(f"주간 브리핑 실패: {e}")
 
 
+def job_worker_josecho():
+    """09:00 — 조세호 일일 업무 보고 + 카카오톡"""
+    logger.info("🧮 09:00 조세호 일일 업무 보고 시작")
+    try:
+        report = josecho_run()
+        success = send_briefing(report)
+        if success:
+            logger.info("조세호 보고 카카오톡 발송 성공")
+        else:
+            logger.warning("조세호 보고 카카오톡 발송 실패")
+    except Exception as e:
+        logger.error(f"조세호 업무 실패: {e}")
+
+
+def job_worker_hamyoungjin():
+    """09:00 — 함영진 부동산 시장 브리핑 + 카카오톡"""
+    logger.info("🏠 09:00 함영진 시장 브리핑 시작")
+    try:
+        report = hamyoungjin_run()
+        success = send_briefing(report)
+        if success:
+            logger.info("함영진 브리핑 카카오톡 발송 성공")
+        else:
+            logger.warning("함영진 브리핑 카카오톡 발송 실패")
+    except Exception as e:
+        logger.error(f"함영진 업무 실패: {e}")
+
+
+def job_worker_okungyoung_weekly():
+    """월요일 09:00 — 오건영 KB시세 주간 분석 + 카카오톡"""
+    logger.info("💹 월요일 09:00 오건영 KB시세 주간 분석 시작")
+    try:
+        report = okungyoung_run("weekly")
+        success = send_briefing(report)
+        if success:
+            logger.info("오건영 주간 분석 카카오톡 발송 성공")
+        else:
+            logger.warning("오건영 주간 분석 카카오톡 발송 실패")
+    except Exception as e:
+        logger.error(f"오건영 주간 분석 실패: {e}")
+
+
+def job_worker_okungyoung_monthly():
+    """매월 1일 09:00 — 오건영 KB시세 월간 분석 + 카카오톡"""
+    logger.info("💹 매월 1일 09:00 오건영 KB시세 월간 분석 시작")
+    try:
+        report = okungyoung_run("monthly")
+        success = send_briefing(report)
+        if success:
+            logger.info("오건영 월간 분석 카카오톡 발송 성공")
+        else:
+            logger.warning("오건영 월간 분석 카카오톡 발송 실패")
+    except Exception as e:
+        logger.error(f"오건영 월간 분석 실패: {e}")
+
+
 def job_daily_debate():
     """09:30 — 일일 자율 토론 (AI 직원)"""
     import random
@@ -148,6 +207,38 @@ def start_scheduler():
         name="주간 브리핑 (이준서→강수미)",
     )
 
+    # 매일 09:00 — 조세호 일일 업무 보고
+    scheduler.add_job(
+        job_worker_josecho,
+        CronTrigger(hour=9, minute=0, timezone="Asia/Seoul"),
+        id="daily_josecho",
+        name="일일 업무 보고 (조세호)",
+    )
+
+    # 매일 09:00 — 함영진 시장 브리핑
+    scheduler.add_job(
+        job_worker_hamyoungjin,
+        CronTrigger(hour=9, minute=0, timezone="Asia/Seoul"),
+        id="daily_hamyoungjin",
+        name="시장 브리핑 (함영진)",
+    )
+
+    # 매주 월요일 09:00 — 오건영 KB시세 주간 분석
+    scheduler.add_job(
+        job_worker_okungyoung_weekly,
+        CronTrigger(day_of_week="mon", hour=9, minute=0, timezone="Asia/Seoul"),
+        id="weekly_okungyoung",
+        name="KB시세 주간 분석 (오건영)",
+    )
+
+    # 매월 1일 09:00 — 오건영 KB시세 월간 분석
+    scheduler.add_job(
+        job_worker_okungyoung_monthly,
+        CronTrigger(day=1, hour=9, minute=0, timezone="Asia/Seoul"),
+        id="monthly_okungyoung",
+        name="KB시세 월간 분석 (오건영)",
+    )
+
     # 매일 09:30 — 일일 자율 토론
     scheduler.add_job(
         job_daily_debate,
@@ -162,8 +253,11 @@ def start_scheduler():
     logger.info("  07:00 — 모니터링 (이경규+전현무)")
     logger.info("  08:00 — 인프라 점검 (하정우+최민식)")
     logger.info("  09:00 — 일일 브리핑 (이준서→강수미 카카오)")
+    logger.info("  09:00 — 조세호 일일 업무 보고 (카카오)")
+    logger.info("  09:00 — 함영진 시장 브리핑 (카카오)")
     logger.info("  09:30 — 일일 자율 토론 (AI 직원)")
-    logger.info("  월 09:00 — 주간 브리핑")
+    logger.info("  월 09:00 — 주간 브리핑 + 오건영 KB주간")
+    logger.info("  매월 1일 — 오건영 KB월간")
     logger.info("=" * 50)
     return scheduler
 
