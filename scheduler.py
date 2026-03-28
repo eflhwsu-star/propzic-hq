@@ -19,6 +19,7 @@ from ai_team.monitor_agent import run as monitor_run
 from ai_team.infra_agent import run as infra_run
 from ai_team.ceo_agent import generate_daily_briefing, generate_weekly_briefing
 from ai_team.secretary import send_briefing
+from hq_debate_engine import run_debate
 
 logging.basicConfig(
     level=logging.INFO,
@@ -90,6 +91,27 @@ def job_weekly_briefing():
         logger.error(f"주간 브리핑 실패: {e}")
 
 
+def job_daily_debate():
+    """09:30 — 일일 자율 토론 (AI 직원)"""
+    import random
+    topics = [
+        ("오늘 부동산 시장 동향과 집알기 서비스 전략", "market"),
+        ("집값해독 DAU 증가를 위한 개선 방향", "strategy"),
+        ("중개오토 B2B 영업 확대 전략", "strategy"),
+        ("최근 부동산 정책 변화가 서비스에 미치는 영향", "market"),
+        ("기술 인프라 개선 및 사용자 경험 향상 방안", "tech"),
+        ("경쟁사 대비 차별화 전략", "strategy"),
+        ("서비스 법적 리스크 점검", "legal"),
+    ]
+    topic, category = random.choice(topics)
+    logger.info(f"🕐 09:30 일일 토론 시작: [{category}] {topic}")
+    try:
+        debate_id, conclusion = run_debate(topic, category, "scheduled")
+        logger.info(f"일일 토론 완료: {debate_id}")
+    except Exception as e:
+        logger.error(f"일일 토론 실패: {e}")
+
+
 def start_scheduler():
     """스케줄러 시작"""
     scheduler = BackgroundScheduler(timezone="Asia/Seoul")
@@ -126,12 +148,21 @@ def start_scheduler():
         name="주간 브리핑 (이준서→강수미)",
     )
 
+    # 매일 09:30 — 일일 자율 토론
+    scheduler.add_job(
+        job_daily_debate,
+        CronTrigger(hour=9, minute=30, timezone="Asia/Seoul"),
+        id="daily_debate",
+        name="일일 자율 토론 (AI 직원)",
+    )
+
     scheduler.start()
     logger.info("=" * 50)
     logger.info(f"{BRAND_NAME} HQ Scheduler 시작 (Asia/Seoul)")
     logger.info("  07:00 — 모니터링 (이경규+전현무)")
     logger.info("  08:00 — 인프라 점검 (하정우+최민식)")
     logger.info("  09:00 — 일일 브리핑 (이준서→강수미 카카오)")
+    logger.info("  09:30 — 일일 자율 토론 (AI 직원)")
     logger.info("  월 09:00 — 주간 브리핑")
     logger.info("=" * 50)
     return scheduler

@@ -21,6 +21,10 @@ from brand_config import (
     BRAND_NAME, SERVICE_B2C, SERVICE_B2B, HQ_DOMAIN, DEFAULT_MODEL,
     CEO_COMMAND_SYSTEM, EMPLOYEE_MAP,
 )
+from hq_debate_engine import (
+    run_debate_streaming, get_debates, get_debate_detail,
+    HQ_EMPLOYEES, TOPIC_PARTICIPANTS,
+)
 
 load_dotenv()
 
@@ -403,6 +407,58 @@ async def _execute_staff(assignment: dict, fallback_task: str):
 
     except Exception as e:
         yield f"data: {json.dumps({'phase': 'staff_error', 'name': staff_name, 'message': str(e)}, ensure_ascii=False)}\n\n"
+
+
+# ===== DEBATE ENDPOINTS =====
+
+@app.get("/api/debates")
+async def list_debates(limit: int = 10):
+    """토론 목록 조회"""
+    try:
+        debates = get_debates(limit)
+        return JSONResponse(debates)
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/api/debates/{debate_id}")
+async def debate_detail(debate_id: str):
+    """토론 상세 조회 (전체 대화 포함)"""
+    try:
+        result = get_debate_detail(debate_id)
+        return JSONResponse(result)
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.post("/api/debates/start")
+async def start_debate(request: Request):
+    """새 토론 시작 (SSE 스트리밍)"""
+    body = await request.json()
+    topic = body.get("topic", "")
+    category = body.get("category", "ceo_order")
+
+    if not topic:
+        return JSONResponse({"error": "주제를 입력해주세요."}, status_code=400)
+
+    def generate():
+        yield from run_debate_streaming(topic, category, "ceo_order")
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+@app.get("/api/debates/meta/participants")
+async def debate_participants():
+    """토론 참여 직원 메타 정보"""
+    return JSONResponse({
+        "employees": {
+            name: {"emoji": e["emoji"], "dept": e["dept"], "role": e["role"]}
+            for name, e in HQ_EMPLOYEES.items()
+        },
+        "topic_categories": {
+            cat: members for cat, members in TOPIC_PARTICIPANTS.items()
+        },
+    })
 
 
 if __name__ == "__main__":

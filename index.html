@@ -163,6 +163,81 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
 .direct-select option{background:var(--bg3);color:var(--text);padding:4px}
 .direct-badge{display:inline-block;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:700;background:#2a3f6b;color:#7dbaff}
 
+/* ===== DEBATE PANEL ===== */
+.debate-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.debate-header-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg2);border-bottom:1px solid #2a3444}
+.debate-header-bar h3{font-size:15px;color:var(--gold);font-weight:700}
+.debate-new-btn{background:var(--gold);color:#0d1b2a;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.debate-new-btn:hover{opacity:.85}
+.debate-new-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Debate list */
+.debate-list{flex:1;overflow-y:auto;padding:12px 20px}
+.debate-list::-webkit-scrollbar{width:6px}
+.debate-list::-webkit-scrollbar-thumb{background:#3a4a5a;border-radius:3px}
+.debate-card{background:var(--bg2);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .2s;border:1px solid #2a3444}
+.debate-card:hover{border-color:var(--gold);background:var(--bg3)}
+.debate-card.active{border-color:var(--gold)}
+.debate-card-topic{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.debate-card-meta{display:flex;gap:10px;font-size:11px;color:var(--text2);flex-wrap:wrap;align-items:center}
+.debate-card-meta .cat-badge{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700}
+.cat-market{background:#2a6b4a;color:#7dffba}
+.cat-strategy{background:#2a4f8b;color:#7dbaff}
+.cat-tech{background:#6b5a2a;color:#ffd97d}
+.cat-legal{background:#6b2a4a;color:#ff7dba}
+.cat-operation{background:#4a2a6b;color:#ba7dff}
+.cat-ceo_order{background:#6b4a2a;color:#ffba7d}
+.debate-card-participants{display:flex;gap:3px;margin-top:6px;font-size:14px}
+.debate-card-status{font-size:11px;font-weight:700}
+.status-concluded{color:#4ade80}
+.status-in_progress{color:#facc15}
+
+/* Debate detail view */
+.debate-detail{display:none;flex:1;flex-direction:column;overflow:hidden}
+.debate-detail.active{display:flex}
+.debate-detail-header{padding:12px 20px;background:var(--bg2);border-bottom:1px solid #2a3444;display:flex;align-items:center;gap:10px}
+.debate-detail-header .back-btn{cursor:pointer;font-size:18px;color:var(--text2)}
+.debate-detail-header .back-btn:hover{color:var(--gold)}
+.debate-detail-topic{font-size:15px;font-weight:700;flex:1}
+
+.debate-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px}
+.debate-messages::-webkit-scrollbar{width:6px}
+.debate-messages::-webkit-scrollbar-thumb{background:#3a4a5a;border-radius:3px}
+
+.debate-msg{padding:12px 16px;border-radius:14px;background:var(--bg2);animation:fadeIn .3s;max-width:85%}
+.debate-msg .dm-header{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;font-weight:700}
+.debate-msg .dm-dept{font-size:10px;color:var(--text2);font-weight:400}
+.debate-msg .dm-round{font-size:10px;color:var(--text2);margin-left:auto;font-weight:400}
+.debate-msg .dm-content{font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+
+/* CEO conclusion card */
+.debate-msg.ceo-conclusion{border:2px solid var(--gold);background:linear-gradient(135deg,#1b2838 0%,#2a3447 100%);max-width:100%}
+.debate-msg.ceo-conclusion .dm-header{color:var(--gold);font-size:14px}
+
+/* Round divider */
+.debate-round-divider{text-align:center;font-size:11px;color:var(--text2);padding:8px 0;font-weight:700}
+.debate-round-divider span{background:var(--bg3);padding:3px 14px;border-radius:10px}
+
+/* New debate modal */
+.debate-modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center}
+.debate-modal-overlay.show{display:flex}
+.debate-modal{background:var(--bg2);border:1px solid var(--gold);border-radius:16px;padding:24px;width:90%;max-width:480px}
+.debate-modal h3{color:var(--gold);font-size:16px;margin-bottom:16px}
+.debate-modal label{font-size:12px;font-weight:700;color:var(--text2);display:block;margin-bottom:6px}
+.debate-modal textarea{width:100%;background:var(--bg3);border:1px solid #3a4a5a;border-radius:10px;padding:10px;color:var(--text);font-size:14px;resize:none;height:80px;font-family:inherit;outline:none}
+.debate-modal textarea:focus{border-color:var(--gold)}
+.debate-modal select{width:100%;background:var(--bg3);border:1px solid #3a4a5a;border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;margin-bottom:16px;appearance:none;-webkit-appearance:none;cursor:pointer}
+.debate-modal select:focus{border-color:var(--gold)}
+.debate-modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.debate-modal-actions button{padding:8px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:opacity .2s}
+.debate-modal-actions .cancel-btn{background:var(--bg3);color:var(--text2)}
+.debate-modal-actions .start-btn{background:var(--gold);color:#0d1b2a}
+.debate-modal-actions button:hover{opacity:.85}
+
+/* Live debate flow in detail */
+.debate-live-indicator{text-align:center;padding:12px;color:var(--gold);font-size:13px;font-weight:700}
+.debate-live-indicator .flow-spinner{margin-right:6px}
+
 /* MOBILE */
 .menu-toggle{display:none;cursor:pointer;font-size:22px;color:var(--gold)}
 @media(max-width:768px){
@@ -202,6 +277,7 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('chat')">💬 대화</button>
     <button class="tab-btn" onclick="switchTab('command')">📋 업무명령</button>
+    <button class="tab-btn" onclick="switchTab('debate')">🗣️ 직원토론</button>
   </div>
 
   <!-- TAB 1: CHAT (기존) -->
@@ -219,6 +295,52 @@ html,body{height:100%;font-family:'Segoe UI','Malgun Gothic',sans-serif;backgrou
     <div class="input-area">
       <textarea id="userInput" placeholder="메시지를 입력하세요..." rows="1" onkeydown="handleKey(event)"></textarea>
       <button class="send-btn" id="sendBtn" onclick="sendMessage()">전송</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: DEBATE -->
+  <div class="tab-panel" id="tab-debate">
+    <div class="debate-panel">
+      <!-- List view -->
+      <div id="debateListView">
+        <div class="debate-header-bar">
+          <h3>🗣️ AI 직원 토론방</h3>
+          <button class="debate-new-btn" onclick="openDebateModal()">+ 새 토론 시작</button>
+        </div>
+        <div class="debate-list" id="debateList">
+          <div style="text-align:center;padding:40px;color:var(--text2);font-size:13px">토론 목록을 불러오는 중...</div>
+        </div>
+      </div>
+      <!-- Detail view -->
+      <div class="debate-detail" id="debateDetailView">
+        <div class="debate-detail-header">
+          <span class="back-btn" onclick="closeDebateDetail()">← </span>
+          <span class="debate-detail-topic" id="debateDetailTopic"></span>
+        </div>
+        <div class="debate-messages" id="debateMessages"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debate modal -->
+  <div class="debate-modal-overlay" id="debateModal">
+    <div class="debate-modal">
+      <h3>🗣️ 새 토론 시작</h3>
+      <label>주제 카테고리</label>
+      <select id="debateCategorySelect">
+        <option value="market">📈 시장 분석</option>
+        <option value="strategy">🎯 전략</option>
+        <option value="tech">💻 기술</option>
+        <option value="legal">⚖️ 법무</option>
+        <option value="operation">⚙️ 운영</option>
+        <option value="ceo_order" selected>👑 CEO 지시</option>
+      </select>
+      <label>토론 주제</label>
+      <textarea id="debateTopicInput" placeholder="직원들이 토론할 주제를 입력하세요..."></textarea>
+      <div class="debate-modal-actions">
+        <button class="cancel-btn" onclick="closeDebateModal()">취소</button>
+        <button class="start-btn" id="debateStartBtn" onclick="startNewDebate()">토론 시작 ▶</button>
+      </div>
     </div>
   </div>
 
@@ -882,11 +1004,253 @@ checkBriefing();
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function goBackToSidebar() { document.getElementById('sidebar').classList.add('open'); }
 
+// ===== DEBATE =====
+
+const DEPT_COLORS_MAP = {
+  'C-Suite': 'gold', '법무컴플라이언스': 'navy', '부동산현장전문가': 'green',
+  '기술팀': 'blue', '마케팅팀': 'pink', '고객경험팀': 'mint',
+  '전략인텔팀': 'orange', '경영지원팀': 'gray',
+};
+
+const CAT_LABELS = {
+  market: '📈 시장분석', strategy: '🎯 전략', tech: '💻 기술',
+  legal: '⚖️ 법무', operation: '⚙️ 운영', ceo_order: '👑 CEO지시',
+};
+
+let debateListCache = [];
+
+function openDebateModal() {
+  document.getElementById('debateModal').classList.add('show');
+  document.getElementById('debateTopicInput').focus();
+}
+function closeDebateModal() {
+  document.getElementById('debateModal').classList.remove('show');
+  document.getElementById('debateTopicInput').value = '';
+}
+
+async function loadDebates() {
+  const box = document.getElementById('debateList');
+  try {
+    const res = await fetch(API_BASE + '/api/debates?limit=20');
+    if (!res.ok) throw new Error('API error');
+    debateListCache = await res.json();
+    renderDebateList();
+  } catch (e) {
+    box.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text2);font-size:13px">토론 목록을 불러올 수 없습니다.<br><span style="font-size:11px">${escHtml(e.message)}</span></div>`;
+  }
+}
+
+function renderDebateList() {
+  const box = document.getElementById('debateList');
+  if (debateListCache.length === 0) {
+    box.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2);font-size:13px">아직 진행된 토론이 없습니다.<br>「+ 새 토론 시작」을 눌러 첫 토론을 시작하세요.</div>';
+    return;
+  }
+  box.innerHTML = debateListCache.map(d => {
+    const date = new Date(d.created_at).toLocaleString('ko-KR', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    const cat = d.topic_category || 'strategy';
+    const participants = (d.participants || []).map(n => {
+      const emp = ALL_STAFF[n];
+      return emp ? emp.emoji : '💬';
+    }).join('');
+    const statusCls = d.status === 'concluded' ? 'status-concluded' : 'status-in_progress';
+    const statusTxt = d.status === 'concluded' ? '✅ 완료' : '🔄 진행중';
+    return `<div class="debate-card" onclick="openDebateDetail('${d.id}')">
+      <div class="debate-card-topic">${escHtml(d.topic)}</div>
+      <div class="debate-card-meta">
+        <span class="cat-badge cat-${cat}">${CAT_LABELS[cat] || cat}</span>
+        <span>${date}</span>
+        <span class="debate-card-status ${statusCls}">${statusTxt}</span>
+      </div>
+      <div class="debate-card-participants">${participants}</div>
+    </div>`;
+  }).join('');
+}
+
+async function openDebateDetail(debateId) {
+  document.getElementById('debateListView').style.display = 'none';
+  const detail = document.getElementById('debateDetailView');
+  detail.classList.add('active');
+  const msgBox = document.getElementById('debateMessages');
+  msgBox.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)"><span class="flow-spinner"></span> 토론 내용을 불러오는 중...</div>';
+
+  try {
+    const res = await fetch(API_BASE + `/api/debates/${debateId}`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    document.getElementById('debateDetailTopic').textContent = data.debate?.topic || '';
+    renderDebateMessages(data.messages || []);
+  } catch (e) {
+    msgBox.innerHTML = `<div style="text-align:center;padding:40px;color:#ef4444">불러오기 실패: ${escHtml(e.message)}</div>`;
+  }
+}
+
+function renderDebateMessages(messages) {
+  const box = document.getElementById('debateMessages');
+  let html = '';
+  let lastRound = 0;
+
+  for (const m of messages) {
+    const isCeo = m.round_number === 99;
+
+    if (!isCeo && m.round_number !== lastRound) {
+      lastRound = m.round_number;
+      html += `<div class="debate-round-divider"><span>라운드 ${lastRound}</span></div>`;
+    }
+
+    if (isCeo) {
+      html += `<div class="debate-round-divider"><span>👔 CEO 최종 결론</span></div>`;
+    }
+
+    const deptColor = DEPT_COLORS_MAP[m.speaker_dept] || 'gold';
+    const extraCls = isCeo ? 'ceo-conclusion' : '';
+
+    html += `<div class="debate-msg ${extraCls} border-${deptColor}">
+      <div class="dm-header">
+        ${m.speaker_emoji} ${m.speaker_name}
+        <span class="dm-dept">${m.speaker_dept} · ${isCeo ? 'CEO' : ''}</span>
+        ${!isCeo ? `<span class="dm-round">R${m.round_number}</span>` : ''}
+      </div>
+      <div class="dm-content">${escHtml(m.content)}</div>
+    </div>`;
+  }
+
+  box.innerHTML = html;
+  box.scrollTop = box.scrollHeight;
+}
+
+function closeDebateDetail() {
+  document.getElementById('debateDetailView').classList.remove('active');
+  document.getElementById('debateListView').style.display = '';
+}
+
+async function startNewDebate() {
+  const topicInput = document.getElementById('debateTopicInput');
+  const catSelect = document.getElementById('debateCategorySelect');
+  const topic = topicInput.value.trim();
+  const category = catSelect.value;
+
+  if (!topic) { alert('토론 주제를 입력해주세���.'); return; }
+
+  const btn = document.getElementById('debateStartBtn');
+  btn.disabled = true;
+  btn.textContent = '토론 진행 중...';
+
+  closeDebateModal();
+
+  // Switch to detail view for live streaming
+  document.getElementById('debateListView').style.display = 'none';
+  const detail = document.getElementById('debateDetailView');
+  detail.classList.add('active');
+  document.getElementById('debateDetailTopic').textContent = topic;
+  const msgBox = document.getElementById('debateMessages');
+  msgBox.innerHTML = '<div class="debate-live-indicator"><span class="flow-spinner"></span> 토론을 시작하는 중...</div>';
+
+  try {
+    const res = await fetch(API_BASE + '/api/debates/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic, category })
+    });
+    if (!res.ok) throw new Error('API error');
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let lastRound = 0;
+
+    msgBox.innerHTML = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6);
+        if (raw === '[DONE]') {
+          // Remove any live indicators
+          const live = msgBox.querySelector('.debate-live-indicator');
+          if (live) live.remove();
+          continue;
+        }
+
+        let parsed;
+        try { parsed = JSON.parse(raw); } catch { continue; }
+
+        if (parsed.phase === 'debate_start') {
+          // Already showing
+
+        } else if (parsed.phase === 'round_start') {
+          lastRound = parsed.round;
+          // Remove old live indicator
+          const oldLive = msgBox.querySelector('.debate-live-indicator');
+          if (oldLive) oldLive.remove();
+          msgBox.innerHTML += `<div class="debate-round-divider"><span>라운드 ${parsed.round}</span></div>`;
+          msgBox.scrollTop = msgBox.scrollHeight;
+
+        } else if (parsed.phase === 'speaking_start') {
+          // Remove old live indicator
+          const oldLive = msgBox.querySelector('.debate-live-indicator');
+          if (oldLive) oldLive.remove();
+          const deptColor = DEPT_COLORS_MAP[parsed.dept] || 'gold';
+          msgBox.innerHTML += `<div class="debate-live-indicator" id="live-speaking">
+            <span class="flow-spinner"></span> ${parsed.emoji} ${parsed.name} 발언 중...
+          </div>`;
+          msgBox.scrollTop = msgBox.scrollHeight;
+
+        } else if (parsed.phase === 'speaking_done') {
+          const liveEl = document.getElementById('live-speaking');
+          if (liveEl) liveEl.remove();
+          const deptColor = DEPT_COLORS_MAP[parsed.dept || ''] || 'gold';
+          msgBox.innerHTML += `<div class="debate-msg border-${deptColor}">
+            <div class="dm-header">
+              ${parsed.emoji} ${parsed.name}
+              <span class="dm-round">R${parsed.round}</span>
+            </div>
+            <div class="dm-content">${escHtml(parsed.content)}</div>
+          </div>`;
+          msgBox.scrollTop = msgBox.scrollHeight;
+
+        } else if (parsed.phase === 'ceo_concluding') {
+          const oldLive = msgBox.querySelector('.debate-live-indicator');
+          if (oldLive) oldLive.remove();
+          msgBox.innerHTML += `<div class="debate-round-divider"><span>👔 CEO 최종 결론</span></div>`;
+          msgBox.innerHTML += `<div class="debate-live-indicator" id="live-ceo">
+            <span class="flow-spinner"></span> 👔 이준서 CEO 결론 도출 중...
+          </div>`;
+          msgBox.scrollTop = msgBox.scrollHeight;
+
+        } else if (parsed.phase === 'ceo_conclusion') {
+          const liveCeo = document.getElementById('live-ceo');
+          if (liveCeo) liveCeo.remove();
+          msgBox.innerHTML += `<div class="debate-msg ceo-conclusion border-gold">
+            <div class="dm-header" style="color:var(--gold);font-size:14px">👔 이준서 CEO</div>
+            <div class="dm-content">${escHtml(parsed.content)}</div>
+          </div>`;
+          msgBox.scrollTop = msgBox.scrollHeight;
+        }
+      }
+    }
+
+    // Refresh list in background
+    loadDebates();
+
+  } catch (e) {
+    msgBox.innerHTML += `<div style="text-align:center;padding:20px;color:#ef4444">⚠️ 토론 실패: ${escHtml(e.message)}</div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '토론 시작 ▶';
+}
+
 // ===== INIT =====
 renderSidebar();
 renderPresets();
 renderDirectDropdown();
 renderHistory();
+loadDebates();
 </script>
 </body>
 </html>
