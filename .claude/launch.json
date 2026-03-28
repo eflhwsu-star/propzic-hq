@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "dashboard",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", ".", "-l", "3000", "--no-clipboard"],
+      "port": 3000
+    },
+    {
       "name": "api-server",
       "runtimeExecutable": "python",
       "runtimeArgs": ["api_server.py"],
