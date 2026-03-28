@@ -21,6 +21,7 @@ from brand_config import (
     BRAND_NAME, SERVICE_B2C, SERVICE_B2B, HQ_DOMAIN, DEFAULT_MODEL,
     CEO_COMMAND_SYSTEM, EMPLOYEE_MAP,
 )
+from db.migrate_debates import migrate as migrate_debates
 from hq_debate_engine import (
     run_debate_streaming, get_debates, get_debate_detail,
     HQ_EMPLOYEES, TOPIC_PARTICIPANTS,
@@ -96,6 +97,9 @@ REPORTS_DIR = BASE_DIR / "reports"
 LOGS_DIR = BASE_DIR / "logs"
 REPORTS_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
+
+# DB 마이그레이션 (서버 시작 시 자동 실행)
+migrate_debates()
 
 # ===== 직원 데이터 =====
 STAFF = {

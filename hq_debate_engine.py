@@ -1,28 +1,28 @@
 """
 PROPZIC HQ — AI 직원 자율 토론 엔진
 직원들이 주제를 놓고 라운드별 토론 후 CEO가 결론 도출
+저장소: 로컬 SQLite (data/hq.db)
 """
 
 import os
 import json
 import logging
+import sqlite3
 import time
 from datetime import datetime
+from uuid import uuid4
 
 import anthropic
-import requests
 from dotenv import load_dotenv
 
 from brand_config import BRAND_NAME, SERVICE_B2C, SERVICE_B2B, DEFAULT_MODEL
+from db.migrate_debates import get_db_path, migrate
 
 load_dotenv()
 
 logger = logging.getLogger("debate-engine")
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-
-SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")  # service_role 키 사용
 
 HAIKU_MODEL = "claude-haiku-4-5-20251001"
 SONNET_MODEL = DEFAULT_MODEL
@@ -56,42 +56,66 @@ def _call_claude(*, model, system, prompt, max_tokens=400, retries=MAX_RETRIES):
                 raise
 
 
-# ===== Supabase REST helpers =====
+# ===== SQLite helpers =====
 
-def _supabase_headers():
-    return {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json",
-        "Prefer": "return=representation",
-    }
-
-
-def _supabase_insert(table: str, data: dict) -> dict:
-    """Supabase REST API로 데이터 삽입"""
-    url = f"{SUPABASE_URL}/rest/v1/{table}"
-    res = requests.post(url, headers=_supabase_headers(), json=data, timeout=10)
-    res.raise_for_status()
-    return res.json()[0] if res.json() else {}
+def _get_conn() -> sqlite3.Connection:
+    """SQLite 연결 (WAL 모��, dict 커서)"""
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA busy_timeout=5000")
+    conn.execute("PRAGMA foreign_keys=ON")
+    return conn
 
 
-def _supabase_update(table: str, match: dict, data: dict) -> dict:
-    """Supabase REST API로 데이터 업데이트"""
-    url = f"{SUPABASE_URL}/rest/v1/{table}"
-    params = {f"{k}": f"eq.{v}" for k, v in match.items()}
-    res = requests.patch(url, headers=_supabase_headers(), params=params, json=data, timeout=10)
-    res.raise_for_status()
-    return res.json()[0] if res.json() else {}
+def _new_id() -> str:
+    return str(uuid4())
 
 
-def _supabase_select(table: str, params: dict = None) -> list:
-    """Supabase REST API로 데이터 조회"""
-    url = f"{SUPABASE_URL}/rest/v1/{table}"
-    headers = _supabase_headers()
-    headers["Prefer"] = ""  # select에서는 필요 없음
-    res = requests.get(url, headers=headers, params=params or {}, timeout=10)
-    res.raise_for_status()
-    return res.json()
+def _db_insert_debate(topic, category, participants, triggered_by) -> str:
+    """토론 세션 INSERT, id 반환"""
+    debate_id = _new_id()
+    conn = _get_conn()
+    try:
+        conn.execute(
+            """INSERT INTO hq_debates (id, topic, topic_category, status, participants, triggered_by, created_at)
+               VALUES (?, ?, ?, 'in_progress', ?, ?, datetime('now'))""",
+            (debate_id, topic, category, json.dumps(participants, ensure_ascii=False), triggered_by),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+    return debate_id
+
+
+def _db_insert_message(debate_id, speaker_key, speaker_name, speaker_emoji, speaker_dept, content, round_number):
+    """토론 발언 INSERT"""
+    msg_id = _new_id()
+    conn = _get_conn()
+    try:
+        conn.execute(
+            """INSERT INTO hq_debate_messages
+               (id, debate_id, speaker_key, speaker_name, speaker_emoji, speaker_dept, content, round_number, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))""",
+            (msg_id, debate_id, speaker_key, speaker_name, speaker_emoji, speaker_dept, content, round_number),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def _db_conclude_debate(debate_id, conclusion):
+    """토론 완료 처리"""
+    conn = _get_conn()
+    try:
+        conn.execute(
+            """UPDATE hq_debates SET status='concluded', conclusion=?, concluded_at=datetime('now')
+               WHERE id=?""",
+            (conclusion, debate_id),
+        )
+        conn.commit()
+    finally:
+        conn.close()
 
 
 # ===== 직원 정의 =====
@@ -154,14 +178,7 @@ def run_debate(topic: str, category: str, triggered_by: str = "scheduled") -> tu
     participants = TOPIC_PARTICIPANTS.get(category, TOPIC_PARTICIPANTS["strategy"])
 
     # 1. 토론 세션 생성
-    debate = _supabase_insert("hq_debates", {
-        "topic": topic,
-        "topic_category": category,
-        "status": "in_progress",
-        "participants": participants,
-        "triggered_by": triggered_by,
-    })
-    debate_id = debate["id"]
+    debate_id = _db_insert_debate(topic, category, participants, triggered_by)
     logger.info(f"토론 시작: [{category}] {topic} (id={debate_id})")
 
     conversation_history = []
@@ -172,7 +189,6 @@ def run_debate(topic: str, category: str, triggered_by: str = "scheduled") -> tu
         for speaker_name in non_ceo:
             employee = HQ_EMPLOYEES[speaker_name]
 
-            # 최근 6개 발언 컨텍스트
             history_text = "\n".join(
                 f"{m['speaker_name']}: {m['content']}"
                 for m in conversation_history[-6:]
@@ -200,16 +216,10 @@ def run_debate(topic: str, category: str, triggered_by: str = "scheduled") -> tu
                 logger.error(f"토론 발언 실패 ({speaker_name}): {e}")
                 content = f"[발언 오류: {e}]"
 
-            # DB 저장
-            _supabase_insert("hq_debate_messages", {
-                "debate_id": debate_id,
-                "speaker_key": speaker_name,
-                "speaker_name": speaker_name,
-                "speaker_emoji": employee["emoji"],
-                "speaker_dept": employee["dept"],
-                "content": content,
-                "round_number": round_num,
-            })
+            _db_insert_message(
+                debate_id, speaker_name, speaker_name,
+                employee["emoji"], employee["dept"], content, round_num,
+            )
 
             conversation_history.append({
                 "speaker_name": speaker_name,
@@ -248,23 +258,11 @@ def run_debate(topic: str, category: str, triggered_by: str = "scheduled") -> tu
         logger.error(f"CEO 결론 도출 실패: {e}")
         ceo_content = f"[결론 도출 오류: {e}]"
 
-    # CEO 발언 저장
-    _supabase_insert("hq_debate_messages", {
-        "debate_id": debate_id,
-        "speaker_key": "이준서",
-        "speaker_name": "이준서",
-        "speaker_emoji": "👔",
-        "speaker_dept": "C-Suite",
-        "content": ceo_content,
-        "round_number": 99,
-    })
+    _db_insert_message(
+        debate_id, "이준서", "이준서", "👔", "C-Suite", ceo_content, 99,
+    )
 
-    # 4. 토론 완료 처리
-    _supabase_update("hq_debates", {"id": debate_id}, {
-        "status": "concluded",
-        "conclusion": ceo_content,
-        "concluded_at": datetime.now().isoformat(),
-    })
+    _db_conclude_debate(debate_id, ceo_content)
 
     logger.info(f"토론 완료: {debate_id}")
     return debate_id, ceo_content
@@ -277,15 +275,7 @@ def run_debate_streaming(topic: str, category: str, triggered_by: str = "ceo_ord
     """
     participants = TOPIC_PARTICIPANTS.get(category, TOPIC_PARTICIPANTS["strategy"])
 
-    # 세션 생성
-    debate = _supabase_insert("hq_debates", {
-        "topic": topic,
-        "topic_category": category,
-        "status": "in_progress",
-        "participants": participants,
-        "triggered_by": triggered_by,
-    })
-    debate_id = debate["id"]
+    debate_id = _db_insert_debate(topic, category, participants, triggered_by)
 
     yield _sse({"phase": "debate_start", "debate_id": debate_id, "topic": topic, "participants": participants})
 
@@ -334,16 +324,10 @@ def run_debate_streaming(topic: str, category: str, triggered_by: str = "ceo_ord
             except Exception as e:
                 content = f"[발언 오류: {e}]"
 
-            # DB 저장
-            _supabase_insert("hq_debate_messages", {
-                "debate_id": debate_id,
-                "speaker_key": speaker_name,
-                "speaker_name": speaker_name,
-                "speaker_emoji": employee["emoji"],
-                "speaker_dept": employee["dept"],
-                "content": content,
-                "round_number": round_num,
-            })
+            _db_insert_message(
+                debate_id, speaker_name, speaker_name,
+                employee["emoji"], employee["dept"], content, round_num,
+            )
 
             conversation_history.append({
                 "speaker_name": speaker_name,
@@ -389,21 +373,11 @@ def run_debate_streaming(topic: str, category: str, triggered_by: str = "ceo_ord
     except Exception as e:
         ceo_content = f"[결론 도출 오류: {e}]"
 
-    _supabase_insert("hq_debate_messages", {
-        "debate_id": debate_id,
-        "speaker_key": "이준서",
-        "speaker_name": "이준서",
-        "speaker_emoji": "👔",
-        "speaker_dept": "C-Suite",
-        "content": ceo_content,
-        "round_number": 99,
-    })
+    _db_insert_message(
+        debate_id, "이준서", "이준서", "👔", "C-Suite", ceo_content, 99,
+    )
 
-    _supabase_update("hq_debates", {"id": debate_id}, {
-        "status": "concluded",
-        "conclusion": ceo_content,
-        "concluded_at": datetime.now().isoformat(),
-    })
+    _db_conclude_debate(debate_id, ceo_content)
 
     yield _sse({
         "phase": "ceo_conclusion",
@@ -416,28 +390,46 @@ def run_debate_streaming(topic: str, category: str, triggered_by: str = "ceo_ord
 
 def get_debates(limit: int = 10) -> list:
     """최근 토론 목록 조회"""
-    return _supabase_select("hq_debates", {
-        "select": "*",
-        "order": "created_at.desc",
-        "limit": str(limit),
-    })
+    conn = _get_conn()
+    try:
+        rows = conn.execute(
+            "SELECT * FROM hq_debates ORDER BY created_at DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+        return [_row_to_dict(r) for r in rows]
+    finally:
+        conn.close()
 
 
 def get_debate_detail(debate_id: str) -> dict:
     """토론 상세 + 전체 발언 조회"""
-    debates = _supabase_select("hq_debates", {
-        "select": "*",
-        "id": f"eq.{debate_id}",
-    })
-    debate = debates[0] if debates else None
+    conn = _get_conn()
+    try:
+        debate_row = conn.execute(
+            "SELECT * FROM hq_debates WHERE id=?", (debate_id,)
+        ).fetchone()
+        debate = _row_to_dict(debate_row) if debate_row else None
 
-    messages = _supabase_select("hq_debate_messages", {
-        "select": "*",
-        "debate_id": f"eq.{debate_id}",
-        "order": "created_at.asc",
-    })
+        msg_rows = conn.execute(
+            "SELECT * FROM hq_debate_messages WHERE debate_id=? ORDER BY created_at ASC",
+            (debate_id,),
+        ).fetchall()
+        messages = [_row_to_dict(r) for r in msg_rows]
 
-    return {"debate": debate, "messages": messages}
+        return {"debate": debate, "messages": messages}
+    finally:
+        conn.close()
+
+
+def _row_to_dict(row: sqlite3.Row) -> dict:
+    """sqlite3.Row → dict 변환, participants JSON 파싱"""
+    d = dict(row)
+    if "participants" in d and isinstance(d["participants"], str):
+        try:
+            d["participants"] = json.loads(d["participants"])
+        except (json.JSONDecodeError, TypeError):
+            pass
+    return d
 
 
 def _sse(data: dict) -> str:
