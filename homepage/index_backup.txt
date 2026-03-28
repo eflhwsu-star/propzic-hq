@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>집알기 - 집값, 이제 제대로 알자</title>
+  <meta name="description" content="부동산은 감이 아니다. 집값을 해독하는 유일한 로직, 프롭직. AI 기반 부동산 데이터 플랫폼.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <img src="./logo.png" alt="집알기" style="height:50px;">
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#services">서비스 소개</a>
+      <a href="#values">사회적 가치</a>
+      <a href="#invest">투자 문의</a>
+      <a href="admin.html" class="btn-admin">관리자 로그인</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">AI 기반 프롭테크 스타트업</div>
+    <h1>집값, 이제 제대로 알자.<br><em>집알기.</em></h1>
+    <p class="sub">부동산은 감이 아니다. 집값을 해독하는 유일한 로직.<br>AI가 분석하고, 데이터가 증명합니다.</p>
+    <div class="hero-btns">
+      <a href="#services" class="btn-primary">서비스 알아보기</a>
+      <a href="#invest" class="btn-outline">투자 문의</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">34</div>
+        <div class="label">전문 분석 엔진</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">24/7</div>
+        <div class="label">무중단 운영</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">2</div>
+        <div class="label">핵심 서비스</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section id="services">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-badge">SERVICES</div>
+      <h2 class="section-title">두 가지 핵심 서비스</h2>
+      <p class="section-desc">일반 사용자를 위한 B2C 플랫폼과 중개사를 위한 B2B 솔루션을 함께 운영합니다.</p>
+    </div>
+    <div class="services-grid">
+      <!-- 집값해독 -->
+      <div class="service-card">
+        <div class="service-icon">🏠</div>
+        <span class="badge badge-b2c">B2C</span>
+        <h3>집값해독</h3>
+        <p>AI가 분석하는 정확한 부동산 시세. 실거래가, 시세 추이, 적정가 판단까지 한눈에 확인하세요.</p>
+        <ul class="service-features">
+          <li>AI 기반 아파트 시세 분석</li>
+          <li>실거래가 트렌드 시각화</li>
+          <li>전세사기 위험도 자동 진단</li>
+          <li>맞춤형 매물 알림 서비스</li>
+        </ul>
+      </div>
+      <!-- 중개오토 -->
+      <div class="service-card">
+        <div class="service-icon">🤖</div>
+        <span class="badge badge-b2b">B2B</span>
+        <h3>중개오토</h3>
+        <p>공인중개사를 위한 AI 업무 자동화 솔루션. 반복 업무는 AI에게, 중개사는 고객에게 집중하세요.</p>
+        <ul class="service-features">
+          <li>매물 등록/관리 자동화</li>
+          <li>고객 문의 AI 응대</li>
+          <li>계약서 자동 생성 및 검토</li>
+          <li>세금 계산기 및 대출 시뮬레이션</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SOCIAL VALUES ===== -->
+<section id="values">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-badge">SOCIAL VALUE</div>
+      <h2 class="section-title">기술로 만드는 사회적 가치</h2>
+      <p class="section-desc">집알기는 부동산 정보 비대칭을 해소하고, 안전한 거래 환경을 만듭니다.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">🛡️</div>
+        <h3>전세사기 방지</h3>
+        <p>등기부등본 AI 분석, 깡통전세 위험도 자동 진단, 임대인 신용 리스크 사전 경고 시스템</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🔍</div>
+        <h3>허위매물 탐지</h3>
+        <p>AI가 매물 정보의 이상 패턴을 감지하여 허위매물을 자동으로 필터링하고 신고합니다</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3>정보약자 보호</h3>
+        <p>1인가구, 사회초년생 등 부동산 경험이 적은 분들에게 전문가 수준의 분석을 무료로 제공합니다</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXPERT SYSTEM ===== -->
+<section>
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-badge">EXPERT SYSTEM</div>
+      <h2 class="section-title">전문가 분석 시스템</h2>
+      <p class="section-desc">부동산, 법무, 금융, 기술 등 7개 전문 분야 분석 엔진이 24시간 데이터를 분석합니다.</p>
+    </div>
+    <div class="team-highlight">
+      <div class="team-left">
+        <h3>부동산 <em>전문 분석</em></h3>
+        <p>부동산, 법무, 금융, 기술, 마케팅, 고객경험, 전략 등 7개 전문 분야 분석 엔진을 갖추고 있습니다. 24시간 365일 자동화된 전문가 시스템이 데이터를 분석합니다.</p>
+      </div>
+      <div class="team-right">
+        <div class="team-stat"><div class="num">7</div><div class="label">전문 분야</div></div>
+        <div class="team-stat"><div class="num">34</div><div class="label">분석 엔진</div></div>
+        <div class="team-stat"><div class="num">365</div><div class="label">일 운영</div></div>
+        <div class="team-stat"><div class="num">24h</div><div class="label">실시간 분석</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INVEST ===== -->
+<section id="invest" class="invest-section">
+  <div class="container">
+    <h2>집알기와 함께 성장하세요</h2>
+    <p class="section-sub">호갱노노, 아실이 하지 못한 것을 집알기가 합니다.<br>공공데이터를 넘어 AI 해석과 전문가 분석을 결합한 한국 최초의 프롭테크 플랫폼입니다.</p>
+
+    <div class="invest-grid">
+      <div class="invest-card">
+        <div class="invest-icon">💰</div>
+        <h3>재무적 투자</h3>
+        <p>투자금은 부동산 특화 AI 모델 개발, 데이터 인프라 고도화, B2B 중개사 네트워크 확장에 사용됩니다.</p>
+      </div>
+      <div class="invest-card">
+        <div class="invest-icon">🧠</div>
+        <h3>재능 투자</h3>
+        <p>중개사, 세무사, 법무사, 부동산 전문가라면 칼럼과 분석 기고로 참여하세요. AI가 품질을 검증하고, 기여할수록 플랫폼 내 전문가 노출이 확대됩니다.</p>
+      </div>
+      <div class="invest-card">
+        <div class="invest-icon">🏆</div>
+        <h3>우리의 목표</h3>
+        <p>한국 부동산 정보의 완전한 민주화. 전세사기 피해자 제로, 허위매물 근절, 정보 약자 보호. 선한 독점을 만들겠습니다.</p>
+      </div>
+    </div>
+
+    <a href="mailto:jipalgi@kakao.com" class="cta-button">투자 문의하기</a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">집알기 JIPALGI</div>
+      <div class="footer-info">
+        부쉽남 | 대표: 이현우 | 사업자등록번호: 202-04-53310<br>
+        contact@jipalgi.com
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="#">이용약관</a>
+      <a href="#">개인정보처리방침</a>
+      <a href="admin.html">관리자</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Header scroll effect
+const header = document.getElementById('siteHeader');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// Mobile menu toggle
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+menuToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+
+// Close menu on link click
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+</script>
+</body>
+</html>
