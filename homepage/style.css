@@ -253,6 +253,11 @@ section:nth-child(even):not(.hero):not(.cta-section):not(.invest-section){backgr
 
   .login-card{padding:36px 28px}
 }
+@media(max-width:600px){
+  #invest [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  #invest [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr!important}
+  #invest [style*="grid-template-columns:repeat(4"]{grid-template-columns:1fr 1fr!important}
+}
 @media(max-width:480px){
   .hero-btns{flex-direction:column;align-items:center}
   .hero-btns a{width:100%;max-width:280px;text-align:center}
