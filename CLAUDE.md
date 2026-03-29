@@ -249,3 +249,21 @@ PROPZIC HQ는 34명 AI직원으로 구성된 가상 지휘본부입니다.
 
 ### 스케줄 변경
 - `scheduler.py`의 `CronTrigger` 파라미터 수정
+
+## 배포 규칙 (필수)
+
+homepage/ 폴더 안의 파일이 변경될 때마다 반드시 아래 순서로 실행할 것:
+1. `git add -A`
+2. `git commit -m "[커밋 메시지]"`
+3. `git push`
+4. `npx wrangler pages deploy homepage --project-name=jipalgi-homepage`
+
+4번까지 완료해야 배포 완료. git push만 하고 끝내면 안 됨.
+
+## DGX Spark 전환 대비 개발 원칙
+
+- Claude API 호출 코드는 반드시 별도 모듈로 분리할 것 (llm_client.py 등)
+  → 나중에 Ollama 로컬 LLM으로 교체 시 해당 모듈만 수정하면 됨
+- 프롬프트는 코드에 하드코딩하지 말고 별도 파일/변수로 관리
+- 적용 순서: ①지금=Anthropic API ②MAU1000=Oracle Ollama 단순업무 ③DGX구매=전체전환+파인튜닝
+- DGX 추가 하드웨어: UPS(무정전), 기가비트 공유기, 외장SSD(백업)
