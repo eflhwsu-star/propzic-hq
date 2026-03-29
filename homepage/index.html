@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -18,14 +18,10 @@
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
     <a href="#" class="logo">
-      <img src="./K-009-Photoroom.png" alt="집알기" style="height:50px;">
+      <img src="./K-009-Photoroom.png" alt="집알기">
+      <span>집알기</span>
     </a>
-    <nav class="nav-links" id="navLinks">
-      <a href="#services">서비스 소개</a>
-      <a href="#values">사회적 가치</a>
-      <a href="#invest">투자 문의</a>
-      <a href="admin.html" class="btn-admin">관리자 로그인</a>
-    </nav>
+    <a href="http://pf.kakao.com/_mDJxdX/chat" target="_blank" class="header-cta" id="headerCta">투자 문의</a>
     <button class="menu-toggle" id="menuToggle" aria-label="메뉴">
       <span></span><span></span><span></span>
     </button>
@@ -35,26 +31,11 @@
 <!-- ===== HERO ===== -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">AI 기반 프롭테크 스타트업</div>
     <h1>집값, 이제 제대로 알자.<br><em>집알기.</em></h1>
-    <p class="sub">부동산은 감이 아니다. 집값을 해독하는 유일한 로직.<br>AI가 분석하고, 데이터가 증명합니다.</p>
+    <p class="sub">부동산 데이터 분석의 새로운 기준</p>
     <div class="hero-btns">
-      <a href="#services" class="btn-primary">서비스 알아보기</a>
-      <a href="#invest" class="btn-outline">투자 문의</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="num">34</div>
-        <div class="label">부동산 데이터 자동수집 시스템</div>
-      </div>
-      <div class="hero-stat">
-        <div class="num">24/7</div>
-        <div class="label">Oracle Cloud + Cloudflare 이중화 — 서버 장애 시에도 서비스 유지</div>
-      </div>
-      <div class="hero-stat">
-        <div class="num">2</div>
-        <div class="label">핵심 서비스</div>
-      </div>
+      <a href="https://집값해독.com" class="btn-primary">집값해독 바로가기</a>
+      <a href="https://중개오토.com" class="btn-secondary">중개오토 알아보기</a>
     </div>
   </div>
 </section>
@@ -62,269 +43,218 @@
 <!-- ===== SERVICES ===== -->
 <section id="services">
   <div class="container">
-    <div class="text-center">
-      <div class="section-badge">SERVICES</div>
+    <div class="text-center fade-in">
+      <div class="section-badge">Services</div>
       <h2 class="section-title">두 가지 핵심 서비스</h2>
-      <p class="section-desc">일반 사용자를 위한 B2C 플랫폼과 중개사를 위한 B2B 솔루션을 함께 운영합니다.</p>
+      <p class="section-desc">일반 사용자를 위한 B2C 플랫폼과 공인중개사를 위한 B2B 솔루션</p>
     </div>
     <div class="services-grid">
-      <!-- 집값해독 -->
-      <div class="service-card">
+      <div class="service-card fade-in">
         <div class="service-icon">🏠</div>
-        <span class="badge badge-b2c">B2C</span>
+        <span class="service-badge badge-b2c">B2C</span>
         <h3>집값해독</h3>
-        <p>AI가 분석하는 정확한 부동산 시세. 실거래가, 시세 추이, 적정가 판단까지 한눈에 확인하세요.</p>
+        <p class="service-sub">AI가 해석하는 부동산 데이터</p>
         <ul class="service-features">
-          <li>AI 기반 아파트 시세 분석</li>
-          <li>실거래가 트렌드 시각화</li>
-          <li>전세사기 위험도 자동 진단</li>
-          <li>맞춤형 매물 알림 서비스</li>
+          <li>아파트 실거래가 분석</li>
+          <li>AI 전문가 7인 토론</li>
+          <li>전세 위험도 분석</li>
         </ul>
+        <a href="https://집값해독.com" class="service-link">서비스 바로가기 →</a>
       </div>
-      <!-- 중개오토 -->
-      <div class="service-card">
-        <div class="service-icon">🤖</div>
-        <span class="badge badge-b2b">B2B</span>
+      <div class="service-card fade-in">
+        <div class="service-icon">🏢</div>
+        <span class="service-badge badge-b2b">B2B</span>
         <h3>중개오토</h3>
-        <p>공인중개사를 위한 AI 업무 자동화 솔루션. 반복 업무는 AI에게, 중개사는 고객에게 집중하세요.</p>
+        <p class="service-sub">공인중개사를 위한 자동화 플랫폼</p>
         <ul class="service-features">
-          <li>매물 등록/관리 자동화</li>
-          <li>고객 문의 AI 응대</li>
-          <li>계약서 자동 생성 및 검토</li>
-          <li>세금 계산기 및 대출 시뮬레이션</li>
+          <li>매물 자동등록</li>
+          <li>고객 자동응대</li>
+          <li>시세 리포트 자동발송</li>
         </ul>
+        <a href="https://중개오토.com" class="service-link">서비스 바로가기 →</a>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ===== SOCIAL VALUES ===== -->
-<section id="values">
+<section id="values" style="background:#0d1829">
   <div class="container">
-    <div class="text-center">
-      <div class="section-badge">SOCIAL VALUE</div>
-      <h2 class="section-title">기술로 만드는 사회적 가치</h2>
-      <p class="section-desc">집알기는 부동산 정보 비대칭을 해소하고, 안전한 거래 환경을 만듭니다.</p>
+    <div class="text-center fade-in">
+      <div class="section-badge">Social Value</div>
+      <h2 class="section-title">정부가 못하는 일을 민간이 합니다</h2>
+      <p class="section-desc">부동산 정보 비대칭을 해소하고, 안전한 거래 환경을 만듭니다.</p>
     </div>
     <div class="values-grid">
-      <div class="value-card">
+      <div class="value-card fade-in">
         <div class="value-icon">🛡️</div>
         <h3>전세사기 방지</h3>
-        <p>등기부등본 AI 분석, 깡통전세 위험도 자동 진단, 임대인 신용 리스크 사전 경고 시스템</p>
+        <p>전세 위험도 분석으로 깡통전세 사전 차단</p>
       </div>
-      <div class="value-card">
+      <div class="value-card fade-in">
         <div class="value-icon">🔍</div>
         <h3>허위매물 탐지</h3>
-        <p>AI가 매물 정보의 이상 패턴을 감지하여 허위매물을 자동으로 필터링하고 신고합니다</p>
+        <p>AI가 실거래 데이터와 매물을 비교해 허위매물 식별</p>
       </div>
-      <div class="value-card">
-        <div class="value-icon">🤝</div>
+      <div class="value-card fade-in">
+        <div class="value-icon">📊</div>
         <h3>정보약자 보호</h3>
-        <p>1인가구, 사회초년생 등 부동산 경험이 적은 분들에게 전문가 수준의 분석을 무료로 제공합니다</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== EXPERT SYSTEM ===== -->
-<section>
-  <div class="container">
-    <div class="text-center" style="margin-bottom:48px">
-      <div class="section-badge">EXPERT SYSTEM</div>
-      <h2 class="section-title">전문가 분석 시스템</h2>
-      <p class="section-desc">부동산, 법무, 금융, 기술 등 7개 전문 분야 분석 엔진이 24시간 데이터를 분석합니다.</p>
-    </div>
-    <div class="team-highlight" style="flex-direction:column">
-      <div style="margin-bottom:12px">
-        <h3>AI <em>전문가 7인</em>이 동시에 분석합니다</h3>
-        <p style="color:rgba(255,255,255,.6);margin-top:8px">동일한 데이터를 하락론·상승론·경매·금융 등 7가지 관점에서 다각도 분석. 편향 없는 정보를 제공합니다.</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px">
-        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px;border-left:3px solid #E8192C">
-          <div style="font-size:1.2rem;margin-bottom:6px">📉 김하락</div>
-          <div style="font-size:.8rem;font-weight:700;color:#E8192C;margin-bottom:4px">하락론 전문</div>
-          <div style="font-size:.72rem;color:#7A8DA3;line-height:1.5">금리·공급·거시경제 기반 하락 시나리오 분석. 리스크 헤지 전략 제시.</div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px;border-left:3px solid #1DB86A">
-          <div style="font-size:1.2rem;margin-bottom:6px">📈 박상승</div>
-          <div style="font-size:.8rem;font-weight:700;color:#1DB86A;margin-bottom:4px">상승론 전문</div>
-          <div style="font-size:.72rem;color:#7A8DA3;line-height:1.5">입주물량·수요·개발호재 기반 상승 시나리오 분석. 매수 타이밍 포착.</div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px;border-left:3px solid #3B7FD4">
-          <div style="font-size:1.2rem;margin-bottom:6px">🎓 이교수</div>
-          <div style="font-size:.8rem;font-weight:700;color:#3B7FD4;margin-bottom:4px">학문적 중립 분석</div>
-          <div style="font-size:.72rem;color:#7A8DA3;line-height:1.5">학술 데이터·정책 기반 객관적 시황 해석. 감정 없는 팩트 제시.</div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px;border-left:3px solid #D4960A">
-          <div style="font-size:1.2rem;margin-bottom:6px">🔨 최경매</div>
-          <div style="font-size:.8rem;font-weight:700;color:#D4960A;margin-bottom:4px">경매 전문</div>
-          <div style="font-size:.72rem;color:#7A8DA3;line-height:1.5">낙찰가율·권리분석·명도 리스크까지 경매 전 과정 AI 분석.</div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px;border-left:3px solid #8B5CF6">
-          <div style="font-size:1.2rem;margin-bottom:6px">🏗️ 정개발</div>
-          <div style="font-size:.8rem;font-weight:700;color:#8B5CF6;margin-bottom:4px">정비사업 전문</div>
-          <div style="font-size:.72rem;color:#7A8DA3;line-height:1.5">재개발·재건축 사업단계별 수익성 분석. 이주수요·조합정보 해석.</div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px;border-left:3px solid #F59E0B">
-          <div style="font-size:1.2rem;margin-bottom:6px">💰 한투자</div>
-          <div style="font-size:.8rem;font-weight:700;color:#F59E0B;margin-bottom:4px">다주택 투자 전문</div>
-          <div style="font-size:.72rem;color:#7A8DA3;line-height:1.5">갭투자·전세레버리지·포트폴리오 전략. 세금·규제 리스크 병행 분석.</div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px;border-left:3px solid #06B6D4">
-          <div style="font-size:1.2rem;margin-bottom:6px">🏦 오대출</div>
-          <div style="font-size:.8rem;font-weight:700;color:#06B6D4;margin-bottom:4px">금융·대출 전문</div>
-          <div style="font-size:.72rem;color:#7A8DA3;line-height:1.5">DSR·LTV·스트레스금리 계산. 최적 대출 구조와 금리 타이밍 분석.</div>
-        </div>
+        <p>1인가구·사회초년생도 전문가 수준의 부동산 정보 접근</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ===== INVESTOR RELATIONS ===== -->
-<section id="invest" style="background:#0D1018;padding:80px 0;border-top:1px solid #202530">
-<div style="max-width:960px;margin:0 auto;padding:0 24px">
+<section id="invest" class="invest-section">
+  <div class="container">
+    <div class="text-center fade-in">
+      <div class="section-badge">Investor Relations</div>
+      <h2 class="section-title">🚀 투자자를 찾습니다</h2>
+      <p class="section-desc">부동산 정보의 민주화, 집알기가 만들어갑니다.</p>
+    </div>
 
-  <!-- 섹션 헤더 -->
-  <div style="text-align:center;margin-bottom:56px">
-    <div style="font-size:.75rem;font-weight:600;letter-spacing:.15em;color:#3B7FD4;text-transform:uppercase;margin-bottom:12px">Investor Relations</div>
-    <h2 style="font-family:'Noto Serif KR',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:#C8D4E8;line-height:1.3;margin-bottom:16px">부동산 정보의 민주화<br>집알기가 만들어갑니다</h2>
-    <p style="font-size:.95rem;color:#7A8DA3;max-width:560px;margin:0 auto;line-height:1.7">전세사기·허위매물·정보비대칭으로 피해받는 사람이 없도록.<br>정부가 하지 못한 일을 민간 데이터 플랫폼이 해결합니다.</p>
-  </div>
-
-  <!-- 시장 규모 + 문제 -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px">
-    <div style="background:#141820;border-radius:14px;padding:28px;border:1px solid #202530">
-      <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#7A8DA3;text-transform:uppercase;margin-bottom:16px">Market Size</div>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div><div style="font-family:'JetBrains Mono',monospace;font-size:1.7rem;font-weight:700;color:#C8D4E8">300<span style="font-size:1rem;color:#7A8DA3">조원+</span></div><div style="font-size:.72rem;color:#7A8DA3;margin-top:2px">국내 연간 부동산 거래액</div></div>
-        <div><div style="font-family:'JetBrains Mono',monospace;font-size:1.7rem;font-weight:700;color:#C8D4E8">2<span style="font-size:1rem;color:#7A8DA3">조원</span></div><div style="font-size:.72rem;color:#7A8DA3;margin-top:2px">중개보수 시장 (B2B 타겟)</div></div>
-        <div><div style="font-family:'JetBrains Mono',monospace;font-size:1.7rem;font-weight:700;color:#3B7FD4">1,800<span style="font-size:1rem;color:#7A8DA3">만 가구</span></div><div style="font-size:.72rem;color:#7A8DA3;margin-top:2px">잠재 B2C 사용자 (전국 주택 보유·거래)</div></div>
+    <!-- IR 지표 4개 -->
+    <div class="ir-grid fade-in">
+      <div class="ir-card">
+        <div class="ir-icon">📈</div>
+        <h4>시장규모</h4>
+        <p>국내 부동산 거래 연 300조<br>프롭테크 시장 연평균 15% 성장</p>
+      </div>
+      <div class="ir-card">
+        <div class="ir-icon">🎯</div>
+        <h4>문제정의</h4>
+        <p>복잡한 부동산 정보의 정보 비대칭<br>AI로 누구나 전문가 수준 접근</p>
+      </div>
+      <div class="ir-card">
+        <div class="ir-icon">💡</div>
+        <h4>경쟁우위</h4>
+        <p>공공API 직접 연동 + 전문가 해석 레이어<br>중개오토 선행 데이터로 복제 불가</p>
+      </div>
+      <div class="ir-card">
+        <div class="ir-icon">💰</div>
+        <h4>수익모델</h4>
+        <p>집값해독 구독 (무료/월6,900/월19,900)<br>중개오토 B2B SaaS</p>
       </div>
     </div>
-    <div style="background:#141820;border-radius:14px;padding:28px;border:1px solid #202530">
-      <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#7A8DA3;text-transform:uppercase;margin-bottom:16px">Problem We Solve</div>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <div style="width:6px;height:6px;border-radius:50%;background:#E8192C;flex-shrink:0;margin-top:6px"></div>
-          <div><div style="font-size:.82rem;font-weight:600;color:#C8D4E8">전세사기 피해</div><div style="font-size:.72rem;color:#7A8DA3;margin-top:2px">2023년 피해자 2만명 이상. 정보 비대칭이 원인.</div></div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <div style="width:6px;height:6px;border-radius:50%;background:#D4960A;flex-shrink:0;margin-top:6px"></div>
-          <div><div style="font-size:.82rem;font-weight:600;color:#C8D4E8">허위매물 만연</div><div style="font-size:.72rem;color:#7A8DA3;margin-top:2px">포털 매물의 30% 이상이 실제와 다른 허위·과장 매물.</div></div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <div style="width:6px;height:6px;border-radius:50%;background:#3B7FD4;flex-shrink:0;margin-top:6px"></div>
-          <div><div style="font-size:.82rem;font-weight:600;color:#C8D4E8">데이터 해석 불가</div><div style="font-size:.72rem;color:#7A8DA3;margin-top:2px">공공데이터는 있지만 일반인이 해석할 수 없음.</div></div>
-        </div>
+
+    <!-- 창업자 -->
+    <div class="founder-card fade-in">
+      <div class="founder-avatar">👑</div>
+      <div class="founder-info">
+        <h4>이현우 (태양이선생)</h4>
+        <p>부동산 실거래 90건+ · 前 부동산 전문 강사 · 집알기 회장</p>
+      </div>
+    </div>
+
+    <!-- 현재 지표 -->
+    <div class="traction-grid fade-in">
+      <div class="traction-card">
+        <div class="t-icon">🏗️</div>
+        <h4>개발 완료</h4>
+        <p>집값해독 · 중개오토 · 지휘본부</p>
+      </div>
+      <div class="traction-card">
+        <div class="t-icon">🤖</div>
+        <h4>AI 직원</h4>
+        <p>34명 · 8개 부서 운영</p>
+      </div>
+      <div class="traction-card">
+        <div class="t-icon">🔗</div>
+        <h4>데이터</h4>
+        <p>국토부·대법원·소상공인진흥공단<br>공공API 직접 연동</p>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="invest-cta fade-in">
+      <h3>함께 만들어갈 파트너를 찾습니다</h3>
+      <p>IR 자료와 사업계획서를 즉시 공유해드립니다.</p>
+      <a href="http://pf.kakao.com/_mDJxdX/chat" target="_blank" class="cta-button">💬 카카오로 투자 문의하기</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AI TEAM ===== -->
+<section id="team">
+  <div class="container">
+    <div class="text-center fade-in">
+      <div class="section-badge">Our Team</div>
+      <h2 class="section-title">AI 직원 34명, 8개 부서</h2>
+      <p class="section-desc">각 분야 전문 AI가 24시간 부동산 데이터를 분석하고 서비스를 운영합니다.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card fade-in">
+        <div class="team-icon">👔</div>
+        <h4>C-Suite</h4>
+        <div class="team-count">2명</div>
+        <p>CEO · 비서실장</p>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-icon">⚖️</div>
+        <h4>법무컴플라이언스</h4>
+        <div class="team-count">6명</div>
+        <p>부동산 법규·공시 검증·리스크 관리</p>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-icon">🏠</div>
+        <h4>부동산전문가</h4>
+        <div class="team-count">8명</div>
+        <p>시세 분석·실거래 해석·시장 동향 생성</p>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-icon">💻</div>
+        <h4>기술팀</h4>
+        <div class="team-count">3명</div>
+        <p>서버 운영·API 수집·데이터 파이프라이닝</p>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-icon">📢</div>
+        <h4>마케팅팀</h4>
+        <div class="team-count">5명</div>
+        <p>SNS·인플루언서·사용자 유입</p>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-icon">😊</div>
+        <h4>고객경험팀</h4>
+        <div class="team-count">3명</div>
+        <p>CS·커뮤니티 운영·피드백 반영</p>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-icon">🎯</div>
+        <h4>전략인텔팀</h4>
+        <div class="team-count">4명</div>
+        <p>경쟁사 모니터링·정책 분석·시장 선점</p>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-icon">💼</div>
+        <h4>경영지원팀</h4>
+        <div class="team-count">3명</div>
+        <p>재무·일정·조직 운영</p>
       </div>
     </div>
   </div>
-
-  <!-- 우리의 해법 -->
-  <div style="background:linear-gradient(135deg,#0f1a2e 0%,#141820 100%);border-radius:14px;padding:32px;border:1px solid #1a2b4a;margin-bottom:40px">
-    <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#3B7FD4;text-transform:uppercase;margin-bottom:20px">Our Solution — 왜 집알기인가</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
-      <div style="text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:8px">📊</div>
-        <div style="font-size:.82rem;font-weight:700;color:#C8D4E8;margin-bottom:6px">공공데이터 직접 수집</div>
-        <div style="font-size:.7rem;color:#7A8DA3;line-height:1.5">국토부·한국부동산원·대법원 공공API를 매일 자동 수집. 중간 업체 없이 원본 데이터 직접 활용.</div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:8px">🤖</div>
-        <div style="font-size:.82rem;font-weight:700;color:#C8D4E8;margin-bottom:6px">AI 전문가 7인 해석</div>
-        <div style="font-size:.7rem;color:#7A8DA3;line-height:1.5">하락론·상승론·경매·금융 등 7가지 관점에서 동일 데이터를 다각도 분석. 편향 없는 정보 제공.</div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:8px">🏘</div>
-        <div style="font-size:.82rem;font-weight:700;color:#C8D4E8;margin-bottom:6px">커뮤니티 검증</div>
-        <div style="font-size:.7rem;color:#7A8DA3;line-height:1.5">실거래 경험자·현장 중개사·조합원의 내부 제보가 AI 분석과 결합. 플랫폼만의 독점 인사이트.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 창업자 + 수익모델 -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px">
-    <div style="background:#141820;border-radius:14px;padding:28px;border:1px solid #202530">
-      <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#7A8DA3;text-transform:uppercase;margin-bottom:16px">Founder</div>
-      <div style="display:flex;gap:14px;align-items:flex-start">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#3B7FD4,#1DB86A);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">👑</div>
-        <div>
-          <div style="font-size:.95rem;font-weight:800;color:#C8D4E8;margin-bottom:4px">이현우 (태양이선생)</div>
-          <div style="font-size:.72rem;color:#7A8DA3;line-height:1.7">• 부동산 실거래 직접 90건 이상 경험<br>• 전직 부동산 전문 강사<br>• AI × 부동산 데이터 융합 선도<br>• 집알기 창업자 겸 회장</div>
-        </div>
-      </div>
-    </div>
-    <div style="background:#141820;border-radius:14px;padding:28px;border:1px solid #202530">
-      <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#7A8DA3;text-transform:uppercase;margin-bottom:16px">Revenue Model</div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0D1018;border-radius:8px">
-          <div><div style="font-size:.78rem;font-weight:600;color:#C8D4E8">집값해독 PRO</div><div style="font-size:.66rem;color:#7A8DA3">B2C 구독 · 개인 투자자</div></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;color:#3B7FD4">9,900원/월</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0D1018;border-radius:8px">
-          <div><div style="font-size:.78rem;font-weight:600;color:#C8D4E8">중개오토 SaaS</div><div style="font-size:.66rem;color:#7A8DA3">B2B · 공인중개사 자동화</div></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;color:#1DB86A">월 구독</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0D1018;border-radius:8px">
-          <div><div style="font-size:.78rem;font-weight:600;color:#C8D4E8">데이터 B2B</div><div style="font-size:.66rem;color:#7A8DA3">크롤링 선행지표 판매</div></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;color:#D4960A">준비중</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 현재 지표 -->
-  <div style="background:#141820;border-radius:14px;padding:28px;border:1px solid #202530;margin-bottom:40px">
-    <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#7A8DA3;text-transform:uppercase;margin-bottom:20px">Current Traction — 2026.03 기준</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center">
-      <div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:#3B7FD4">2</div>
-        <div style="font-size:.7rem;color:#7A8DA3;margin-top:4px">운영 서비스</div>
-      </div>
-      <div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:#1DB86A">34</div>
-        <div style="font-size:.7rem;color:#7A8DA3;margin-top:4px">AI 직원</div>
-      </div>
-      <div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:#D4960A">37</div>
-        <div style="font-size:.7rem;color:#7A8DA3;margin-top:4px">분석 데이터 레이어</div>
-      </div>
-      <div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:#C8D4E8">v19</div>
-        <div style="font-size:.7rem;color:#7A8DA3;margin-top:4px">현재 개발 버전</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 투자문의 CTA -->
-  <div style="text-align:center;padding:40px 24px;background:linear-gradient(135deg,#0f1a2e,#141820);border-radius:14px;border:1px solid #1a2b4a">
-    <div style="font-size:.75rem;font-weight:600;letter-spacing:.12em;color:#3B7FD4;text-transform:uppercase;margin-bottom:12px">투자 문의</div>
-    <h3 style="font-family:'Noto Serif KR',serif;font-size:1.5rem;font-weight:900;color:#C8D4E8;margin-bottom:10px">함께 만들어갈 파트너를 찾습니다</h3>
-    <p style="font-size:.82rem;color:#7A8DA3;margin-bottom:28px;line-height:1.7">서비스를 직접 보셨다면, 아래 버튼으로 바로 연락주세요.<br>IR 자료와 사업계획서를 즉시 공유해드립니다.</p>
-    <a href="http://pf.kakao.com/_mDJxdX/chat" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#3B7FD4;color:#fff;padding:14px 32px;border-radius:10px;font-size:.9rem;font-weight:700;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      💬 카카오채널로 투자 문의하기
-    </a>
-    <div style="margin-top:14px;font-size:.68rem;color:#7A8DA3">평일 기준 24시간 내 답변 · 비밀 유지 보장</div>
-  </div>
-
-</div>
 </section>
 
 <!-- ===== FOOTER ===== -->
 <footer class="site-footer">
   <div class="footer-inner">
-    <div>
-      <div class="footer-brand">집알기 JIPALGI</div>
-      <div class="footer-info">
-        부쉽남 | 대표: 이현우 | 사업자등록번호: 202-04-53310<br>
-        contact@jipalgi.com
-      </div>
+    <div class="footer-col">
+      <div class="footer-brand">집알기</div>
+      <p>대표: 이현우<br>ⓒ 2026 집알기. All rights reserved.</p>
     </div>
-    <div class="footer-links">
-      <a href="#">이용약관</a>
-      <a href="#">개인정보처리방침</a>
-      <a href="admin.html">관리자</a>
+    <div class="footer-col">
+      <h5>서비스</h5>
+      <a href="https://집값해독.com" style="display:block">집값해독.com</a>
+      <a href="https://중개오토.com" style="display:block">중개오토.com</a>
     </div>
+    <div class="footer-col">
+      <h5>문의</h5>
+      <a href="http://pf.kakao.com/_mDJxdX/chat" target="_blank" style="display:block">투자문의 (카카오채널)</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    ⓒ 2026 집알기. All rights reserved.
   </div>
 </footer>
 
@@ -337,15 +267,21 @@ window.addEventListener('scroll', () => {
 
 // Mobile menu toggle
 const menuToggle = document.getElementById('menuToggle');
-const navLinks = document.getElementById('navLinks');
+const headerCta = document.getElementById('headerCta');
 menuToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('open');
+  headerCta.classList.toggle('open');
 });
 
-// Close menu on link click
-navLinks.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => navLinks.classList.remove('open'));
-});
+// Scroll fade-in animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
