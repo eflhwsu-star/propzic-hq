@@ -43,6 +43,7 @@ ul{list-style:none}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;color:#1a2b4a}
 .logo img{height:40px;width:auto}
 .header-cta{
+  margin-left:auto;
   padding:10px 24px;border-radius:10px;background:#1a2b4a;color:#fff;
   font-size:14px;font-weight:700;transition:all .2s;
 }
