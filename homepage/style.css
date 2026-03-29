@@ -21,40 +21,41 @@ ul{list-style:none}
 
 /* ===== UTILITY ===== */
 .container{max-width:var(--max-w);margin:0 auto;padding:0 24px}
+.bg-dark{background:var(--bg)}
+.bg-card{background:var(--bg-card)}
 
 /* ===== SCROLL ANIMATION ===== */
 .fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
 .fade-in.visible{opacity:1;transform:translateY(0)}
 
-/* ===== HEADER ===== */
+/* ===== 1. HEADER (흰색, sticky) ===== */
 .site-header{
   position:fixed;top:0;left:0;right:0;z-index:100;
-  background:rgba(13,24,41,.85);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(0,212,255,.08);
+  background:#ffffff;
+  border-bottom:1px solid #e5e7eb;
   transition:box-shadow .3s;
 }
-.site-header.scrolled{box-shadow:0 2px 24px rgba(0,0,0,.4)}
+.site-header.scrolled{box-shadow:0 2px 16px rgba(0,0,0,.08)}
 .header-inner{
   display:flex;align-items:center;justify-content:space-between;
   max-width:var(--max-w);margin:0 auto;padding:0 24px;height:64px;
 }
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;color:#fff}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;color:#1a2b4a}
 .logo img{height:40px;width:auto}
-
 .header-cta{
-  padding:10px 24px;border-radius:10px;background:var(--accent);color:#0d1829;
-  font-size:14px;font-weight:700;transition:all .2s;border:none;cursor:pointer;
+  padding:10px 24px;border-radius:10px;background:#1a2b4a;color:#fff;
+  font-size:14px;font-weight:700;transition:all .2s;
 }
-.header-cta:hover{background:#00b8e0;transform:translateY(-1px)}
+.header-cta:hover{background:#243b5e;transform:translateY(-1px)}
 
 /* Mobile menu */
 .menu-toggle{display:none;background:none;border:none;cursor:pointer;padding:8px}
-.menu-toggle span{display:block;width:22px;height:2px;background:#fff;margin:5px 0;transition:all .3s}
+.menu-toggle span{display:block;width:22px;height:2px;background:#1a2b4a;margin:5px 0;transition:all .3s}
 
-/* ===== HERO ===== */
+/* ===== 2. HERO (배경 #1a2b4a) ===== */
 .hero{
   padding:140px 0 80px;
-  background:linear-gradient(160deg,#0d1829 0%,#1a2b4a 50%,#0d1829 100%);
+  background:linear-gradient(160deg,#0d1829 0%,#1a2b4a 40%,#1a2b4a 60%,#0d1829 100%);
   text-align:center;position:relative;overflow:hidden;
 }
 .hero::before{
@@ -77,9 +78,7 @@ ul{list-style:none}
   max-width:520px;margin:0 auto 40px;line-height:1.6;
 }
 .hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.hero-btns a{
-  padding:15px 36px;border-radius:12px;font-size:15px;font-weight:700;transition:all .25s;
-}
+.hero-btns a{padding:15px 36px;border-radius:12px;font-size:15px;font-weight:700;transition:all .25s}
 .btn-primary{background:var(--accent);color:#0d1829}
 .btn-primary:hover{background:#00b8e0;transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,212,255,.3)}
 .btn-secondary{background:var(--gold);color:#0d1829}
@@ -93,29 +92,25 @@ section{padding:80px 0}
   background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.15);margin-bottom:14px;
   text-transform:uppercase;
 }
-.section-title{
-  font-size:clamp(24px,4vw,38px);font-weight:900;color:#fff;margin-bottom:12px;
-}
+.section-title{font-size:clamp(24px,4vw,38px);font-weight:900;color:#fff;margin-bottom:12px}
 .section-desc{font-size:16px;color:var(--text-sub);max-width:600px;margin-bottom:48px;line-height:1.7}
 .text-center{text-align:center}
 .text-center .section-desc{margin-left:auto;margin-right:auto}
 
-/* ===== SERVICES ===== */
+/* ===== 3. SERVICES (배경 #0d1829) ===== */
 .services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
 .service-card{
   background:var(--bg-card);border-radius:var(--radius);padding:36px 32px;
   border:1px solid rgba(0,212,255,.08);
   transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden;
 }
-.service-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.service-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
 .service-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--accent),var(--gold));
 }
 .service-icon{font-size:40px;margin-bottom:16px}
-.service-badge{
-  display:inline-block;padding:3px 12px;border-radius:10px;font-size:11px;font-weight:700;margin-bottom:14px;
-}
+.service-badge{display:inline-block;padding:3px 12px;border-radius:10px;font-size:11px;font-weight:700;margin-bottom:14px}
 .badge-b2c{background:rgba(0,212,255,.12);color:var(--accent)}
 .badge-b2b{background:rgba(255,215,0,.12);color:var(--gold)}
 .service-card h3{font-size:22px;font-weight:800;color:#fff;margin-bottom:6px}
@@ -125,29 +120,25 @@ section{padding:80px 0}
 .service-features li::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .service-card:first-child .service-features li::before{background:var(--accent)}
 .service-card:last-child .service-features li::before{background:var(--gold)}
-.service-link{
-  display:inline-block;font-size:14px;font-weight:700;color:var(--accent);
-  transition:color .2s;
-}
+.service-link{display:inline-block;font-size:14px;font-weight:700;color:var(--accent);transition:color .2s}
 .service-link:hover{color:#00b8e0}
 
-/* ===== VALUES ===== */
+/* ===== 4. VALUES (배경 #1a2b4a → 카드는 약간 밝게) ===== */
 .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 .value-card{
-  background:var(--bg-card);border-radius:var(--radius);padding:32px 28px;
-  border:1px solid rgba(0,212,255,.06);text-align:center;
+  background:rgba(13,24,41,.5);border-radius:var(--radius);padding:32px 28px;
+  border:1px solid rgba(0,212,255,.08);text-align:center;
   transition:transform .3s;
 }
-.value-card:hover{transform:translateY(-5px)}
+.value-card:hover{transform:translateY(-4px)}
 .value-icon{font-size:40px;margin-bottom:16px}
 .value-card h3{font-size:18px;font-weight:800;color:#fff;margin-bottom:10px}
 .value-card p{font-size:14px;color:var(--text-sub);line-height:1.7}
 
-/* ===== INVESTOR ===== */
-.invest-section{background:var(--bg-card);border-top:1px solid rgba(0,212,255,.08);border-bottom:1px solid rgba(0,212,255,.08)}
+/* ===== 5. INVESTOR (배경 #0d1829) ===== */
 .ir-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:40px}
 .ir-card{
-  background:rgba(13,24,41,.6);border-radius:var(--radius);padding:28px 24px;
+  background:var(--bg-card);border-radius:var(--radius);padding:28px 24px;
   border:1px solid rgba(0,212,255,.06);transition:transform .3s;
 }
 .ir-card:hover{transform:translateY(-4px)}
@@ -156,7 +147,7 @@ section{padding:80px 0}
 .ir-card p{font-size:13px;color:var(--text-sub);line-height:1.7}
 
 .founder-card{
-  background:rgba(13,24,41,.6);border-radius:var(--radius);padding:28px 24px;
+  background:var(--bg-card);border-radius:var(--radius);padding:28px 24px;
   border:1px solid rgba(255,215,0,.12);margin-bottom:32px;
   display:flex;gap:16px;align-items:center;
 }
@@ -170,7 +161,7 @@ section{padding:80px 0}
 
 .traction-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
 .traction-card{
-  background:rgba(13,24,41,.6);border-radius:var(--radius);padding:24px 20px;
+  background:var(--bg-card);border-radius:var(--radius);padding:24px 20px;
   border:1px solid rgba(0,212,255,.06);text-align:center;
   transition:transform .3s;
 }
@@ -180,7 +171,8 @@ section{padding:80px 0}
 .traction-card p{font-size:12px;color:var(--text-sub);line-height:1.6}
 
 .invest-cta{
-  text-align:center;padding:40px 24px;background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(255,215,0,.06));
+  text-align:center;padding:40px 24px;
+  background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(255,215,0,.06));
   border-radius:var(--radius);border:1px solid rgba(0,212,255,.1);
 }
 .invest-cta h3{font-size:20px;font-weight:900;color:#fff;margin-bottom:8px}
@@ -192,29 +184,29 @@ section{padding:80px 0}
 }
 .cta-button:hover{background:#00b8e0;transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,212,255,.3)}
 
-/* ===== AI TEAM ===== */
+/* ===== 6. AI TEAM (배경 #1a2b4a → 카드는 약간 어둡게) ===== */
 .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .team-card{
-  background:var(--bg-card);border-radius:var(--radius);padding:24px 20px;
+  background:rgba(13,24,41,.5);border-radius:var(--radius);padding:24px 20px;
   border:1px solid rgba(0,212,255,.06);text-align:center;
   transition:transform .3s;
 }
-.team-card:hover{transform:translateY(-5px)}
+.team-card:hover{transform:translateY(-4px)}
 .team-card .team-icon{font-size:32px;margin-bottom:10px}
 .team-card h4{font-size:15px;font-weight:800;color:#fff;margin-bottom:2px}
 .team-card .team-count{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px}
 .team-card p{font-size:12px;color:var(--text-sub);line-height:1.6}
 
-/* ===== FOOTER ===== */
+/* ===== 7. FOOTER (배경 #0d1829) ===== */
 .site-footer{
-  background:#080e18;border-top:1px solid rgba(0,212,255,.06);padding:48px 0;
+  background:var(--bg);border-top:1px solid rgba(0,212,255,.06);padding:48px 0;
 }
 .footer-inner{
   max-width:var(--max-w);margin:0 auto;padding:0 24px;
   display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;
 }
 .footer-col h5{font-size:13px;font-weight:700;color:#fff;margin-bottom:12px}
-.footer-col p,.footer-col a{font-size:12px;color:var(--text-sub);line-height:2}
+.footer-col p,.footer-col a{font-size:12px;color:var(--text-sub);line-height:2;display:block}
 .footer-col a:hover{color:var(--accent)}
 .footer-brand{font-size:18px;font-weight:900;color:#fff;margin-bottom:8px}
 .footer-bottom{
@@ -256,14 +248,8 @@ section{padding:80px 0}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:768px){
-  .header-cta-wrap{display:none}
-  .header-cta-wrap.open{
-    display:flex;position:fixed;top:64px;left:0;right:0;
-    background:rgba(13,24,41,.95);padding:20px 24px;
-    border-bottom:1px solid rgba(0,212,255,.08);
-  }
   .menu-toggle{display:block}
-
+  .header-cta{padding:8px 16px;font-size:13px}
   .hero{padding:120px 0 60px}
   .services-grid{grid-template-columns:1fr}
   .values-grid{grid-template-columns:1fr}

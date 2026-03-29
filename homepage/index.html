@@ -14,21 +14,21 @@
 </head>
 <body>
 
-<!-- ===== HEADER ===== -->
+<!-- ===== 1. HEADER (sticky, 흰색) ===== -->
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
     <a href="#" class="logo">
       <img src="./K-009-Photoroom.png" alt="집알기">
       <span>집알기</span>
     </a>
-    <a href="http://pf.kakao.com/_mDJxdX/chat" target="_blank" class="header-cta" id="headerCta">투자 문의</a>
+    <a href="http://pf.kakao.com/_mDJxdX/chat" target="_blank" class="header-cta">투자 문의</a>
     <button class="menu-toggle" id="menuToggle" aria-label="메뉴">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<!-- ===== HERO ===== -->
+<!-- ===== 2. HERO (배경 #1a2b4a) ===== -->
 <section class="hero">
   <div class="container">
     <h1>집값, 이제 제대로 알자.<br><em>집알기.</em></h1>
@@ -40,8 +40,8 @@
   </div>
 </section>
 
-<!-- ===== SERVICES ===== -->
-<section id="services">
+<!-- ===== 3. 서비스 소개 (배경 #0d1829) ===== -->
+<section id="services" class="bg-dark">
   <div class="container">
     <div class="text-center fade-in">
       <div class="section-badge">Services</div>
@@ -77,8 +77,8 @@
   </div>
 </section>
 
-<!-- ===== SOCIAL VALUES ===== -->
-<section id="values" style="background:#0d1829">
+<!-- ===== 4. 사회적 가치 (배경 #1a2b4a) ===== -->
+<section id="values" class="bg-card">
   <div class="container">
     <div class="text-center fade-in">
       <div class="section-badge">Social Value</div>
@@ -105,8 +105,8 @@
   </div>
 </section>
 
-<!-- ===== INVESTOR RELATIONS ===== -->
-<section id="invest" class="invest-section">
+<!-- ===== 5. 투자자 IR (배경 #0d1829) ===== -->
+<section id="invest" class="bg-dark">
   <div class="container">
     <div class="text-center fade-in">
       <div class="section-badge">Investor Relations</div>
@@ -114,7 +114,7 @@
       <p class="section-desc">부동산 정보의 민주화, 집알기가 만들어갑니다.</p>
     </div>
 
-    <!-- IR 지표 4개 -->
+    <!-- IR 지표 4개 (2x2) -->
     <div class="ir-grid fade-in">
       <div class="ir-card">
         <div class="ir-icon">📈</div>
@@ -147,7 +147,7 @@
       </div>
     </div>
 
-    <!-- 현재 지표 -->
+    <!-- 현재 지표 3개 -->
     <div class="traction-grid fade-in">
       <div class="traction-card">
         <div class="t-icon">🏗️</div>
@@ -175,8 +175,8 @@
   </div>
 </section>
 
-<!-- ===== AI TEAM ===== -->
-<section id="team">
+<!-- ===== 6. AI 팀 (배경 #1a2b4a) ===== -->
+<section id="team" class="bg-card">
   <div class="container">
     <div class="text-center fade-in">
       <div class="section-badge">Our Team</div>
@@ -236,21 +236,21 @@
   </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
+<!-- ===== 7. 푸터 (배경 #0d1829) ===== -->
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col">
       <div class="footer-brand">집알기</div>
-      <p>대표: 이현우<br>ⓒ 2026 집알기. All rights reserved.</p>
+      <p>대표: 이현우</p>
     </div>
     <div class="footer-col">
       <h5>서비스</h5>
-      <a href="https://집값해독.com" style="display:block">집값해독.com</a>
-      <a href="https://중개오토.com" style="display:block">중개오토.com</a>
+      <a href="https://집값해독.com">집값해독.com</a>
+      <a href="https://중개오토.com">중개오토.com</a>
     </div>
     <div class="footer-col">
       <h5>문의</h5>
-      <a href="http://pf.kakao.com/_mDJxdX/chat" target="_blank" style="display:block">투자문의 (카카오채널)</a>
+      <a href="http://pf.kakao.com/_mDJxdX/chat" target="_blank">투자문의 (카카오채널)</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -267,9 +267,9 @@ window.addEventListener('scroll', () => {
 
 // Mobile menu toggle
 const menuToggle = document.getElementById('menuToggle');
-const headerCta = document.getElementById('headerCta');
+const navOverlay = document.querySelector('.mobile-nav');
 menuToggle.addEventListener('click', () => {
-  headerCta.classList.toggle('open');
+  menuToggle.classList.toggle('active');
 });
 
 // Scroll fade-in animation
